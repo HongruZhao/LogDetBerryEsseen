@@ -1,86 +1,52 @@
 # Lean verification for *Sharp Berry--Esseen Bounds for the Log Determinant of a Gaussian Sample Correlation Matrix*
 
-This repository distributes the paper-specific Lean 4 verification capsule for the manuscript submitted to *Probability Theory and Related Fields*.
+This repository accompanies the paper-specific Lean 4 verification capsule.
 
-## Current verified release
+## Permanent v1.1.1 archive
 
-Download [`logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.0.zip`](./logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.0.zip) and extract it into a new folder.
+- Zenodo DOI: <https://doi.org/10.5281/zenodo.21896819>
+- ZIP SHA-256: `9b631de6fa41926805f2863673c3d64648bddacad79e166e99d395494069b682`
+- Lean: `4.33.0-rc2`, commit `d8b18978322de05a8f3dba51ef03cf5461676c17`
+- Lake: `5.0.0-src+d8b1897`
+- Elan used for the recorded run: `4.2.3`
+- mathlib: `641fbd329d4ffb62bef83c51f54088469056bd36`
 
-- Capsule version: `v1.1.0`
-- Archive release commit: `07d1854cc686cccd8f4582ffb883e04b734522ed`
-- ZIP SHA-256: `32e2728af1de5a74eac25a9042c588d890d33e84361e5b373389ddbcb49a7f54`
-- `lake-manifest.json` SHA-256: `47e7499d3e7d67f2f3152def1c96126a13aeb23b3c2911deee5ae5bdb640d2ff`
+The final ZIP was verified from a fresh extraction. The source audit, complete
+build, eleven public endpoint checks, sorry audit, exact permitted axiom audit,
+and eight-module `leanchecker` run all passed.
 
-Version 1.1.0 adds the exact Lean theorem for the square-variance refinement (6.5):
+## Reproduce the verification
 
-```lean
-LogdetLean.tendsto_square_nullVSeries_sub_two_log
-```
-
-In the paper's notation, it proves `V_{p,p} - 2 log p -> 2 gamma_E + pi^2/4`.
-
-The previous [v1.0.0 archive](./logdet_Berry_Esseen_PTRF_Lean_verification_v1.0.0.zip) is retained for history.
-
-## One-command reproduction
-
-Install [Elan](https://github.com/leanprover/elan), open a terminal in a freshly extracted v1.1.0 folder, and run:
+Download the ZIP from Zenodo, extract it into a new folder, open a terminal in
+that folder, and run:
 
 ```bash
 ./scripts/verify.sh
 ```
 
-The first run needs network access to obtain the pinned Lean toolchain, mathlib checkout, and binary cache. Elan reads `lean-toolchain` automatically, so no system-wide Lean version change is needed.
-
-A successful verification ends with:
+The first run needs network access to obtain the pinned toolchain and
+dependencies. A successful run ends with:
 
 ```text
 Paper-specific Lean verification passed.
 ```
 
-For manual inspection, the main commands are:
+## What the public interface contains
 
-```bash
-./scripts/verify-source.sh
-lake update
-lake exe cache get
-lake build
-lake env lean LogdetLean/PaperAxiomAudit.lean
-```
+The capsule advertises eleven stable public endpoints for Proposition 4.1,
+Theorems 4.2, 5.1, and 5.2, Proposition 6.1, and Corollary 6.2. Proposition
+6.1 has three public entry points for (6.2), (6.4), and (6.5), with supporting
+declarations in the same dependency cone for (6.1), (6.3), and (6.6).
 
-## Reproducibility record
+Lean checks encoded declarations and their formal dependencies. It does not
+kernel-check the manuscript's English prose, citations, priority claims, or
+the ordinary mathematical exposition in the supplement.
 
-A full run from a fresh extraction completed successfully on August 11, 2026.
+## Before this draft replaces the repository README
 
-- Lean source files audited: 138
-- Advertised endpoint declarations elaborated: 11
-- Root modules checked by `leanchecker`: 8
-- All advertised `#print axioms` reports: exactly `[propext, Classical.choice, Quot.sound]`
-- Endpoint closure: sorry-free
-- Project axioms and unsafe trust escapes found: none
-- Pinned manifest changed during verification: no
-- Pinned mathlib checkout dirty after acquisition: no
-- `lake build`: completed successfully
-
-The build-job count is intentionally not used as a release identifier: it can reflect build progress and cache organization. The durable identifiers are the capsule version, Git commit, ZIP checksum, toolchain commit, mathlib commit, and manifest checksum.
-
-## What is verified
-
-The archive's `STATEMENT_CROSSWALK.md` gives the complete paper-facing boundary. Version 1.1.0 contains eleven advertised declarations covering:
-
-- Proposition 4.1;
-- Theorems 4.2, 5.1, and 5.2;
-- the uniform `A_{m,p}` and `V_{m,p}` equivalents (6.2) and (6.4);
-- the exact square variance refinement (6.5); and
-- the sharp supremum and decimal constant in Corollary 6.2.
-
-Lean checks the encoded declarations and their formal dependencies. It does not by itself certify manuscript prose, bibliography, attribution claims, simulations, or every numbered manuscript equation.
-
-## Exact software versions
-
-- Elan used for the recorded run: `4.2.3` (version manager, not a proof dependency)
-- Lake used for the recorded run: `5.0.0-src+d8b1897`
-- Lean toolchain tag: `leanprover/lean4:v4.33.0-rc2`
-- Lean commit: `d8b18978322de05a8f3dba51ef03cf5461676c17`
-- mathlib commit: `641fbd329d4ffb62bef83c51f54088469056bd36`
-
-All remaining Lean package revisions are pinned in `lake-manifest.json`. See `README.md`, `STATEMENT_CROSSWALK.md`, `REPRODUCIBILITY.md`, `SCOPE.md`, and `COPYRIGHT.md` inside the extracted capsule.
+The permanent v1.1.1 ZIP contains a metadata inconsistency: its
+`CITATION.cff` says `GPL-3.0-or-later`, whereas the Zenodo record says
+`GPL-3.0-only`; its internal crosswalk also retains the earlier narrower
+Proposition 6.1 description. Because changing those files changes the archive
+checksum, publish a corrected v1.1.2 archive before presenting all release
+metadata as identical.
