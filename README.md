@@ -4,26 +4,28 @@ This repository distributes the paper-specific Lean 4 verification capsule for t
 
 ## Current verified release
 
-Download [`logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.0.zip`](./logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.0.zip) and extract it into a new folder.
+Download [`logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip`](./logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip) and extract it into a new folder.
 
-- Capsule version: `v1.1.0`
-- Archive release commit: `07d1854cc686cccd8f4582ffb883e04b734522ed`
-- ZIP SHA-256: `32e2728af1de5a74eac25a9042c588d890d33e84361e5b373389ddbcb49a7f54`
+- Capsule version: `v1.1.2`
+- Permanent Zenodo record: [10.5281/zenodo.21898548](https://doi.org/10.5281/zenodo.21898548)
+- ZIP SHA-256: `563800a00392742c4c4aa1e37296d274bd66b61abf7ec7a11844d1258220dc4e`
+- License: `GPL-3.0-only`
 - `lake-manifest.json` SHA-256: `47e7499d3e7d67f2f3152def1c96126a13aeb23b3c2911deee5ae5bdb640d2ff`
 
-Version 1.1.0 adds the exact Lean theorem for the square-variance refinement (6.5):
+Version 1.1.2 contains thirteen stable public theorem endpoints. It preserves the eleven endpoints from v1.1.1 and adds:
 
 ```lean
-LogdetLean.tendsto_square_nullVSeries_sub_two_log
+LogdetLean.paperEquationSixThree_exact
+LogdetLean.paperEquationSixSix_exact
 ```
 
-In the paper's notation, it proves `V_{p,p} - 2 log p -> 2 gamma_E + pi^2/4`.
+These expose the complete growing-gap statement (6.3) and hard-edge identity (6.6), respectively.
 
-The previous [v1.0.0 archive](./logdet_Berry_Esseen_PTRF_Lean_verification_v1.0.0.zip) is retained for history.
+Earlier archives are retained for version history. Use v1.1.2 for the paper and for all new verification.
 
 ## One-command reproduction
 
-Install [Elan](https://github.com/leanprover/elan), open a terminal in a freshly extracted v1.1.0 folder, and run:
+Install [Elan](https://github.com/leanprover/elan), open a terminal in a freshly extracted v1.1.2 folder, and run:
 
 ```bash
 ./scripts/verify.sh
@@ -49,31 +51,30 @@ lake env lean LogdetLean/PaperAxiomAudit.lean
 
 ## Reproducibility record
 
-A full run from a fresh extraction completed successfully on August 11, 2026.
+The exact v1.1.2 ZIP was verified both from a clean source tree and after extraction into another fresh directory.
 
 - Lean source files audited: 138
-- Advertised endpoint declarations elaborated: 11
+- Advertised endpoint declarations elaborated: 13
 - Root modules checked by `leanchecker`: 8
 - All advertised `#print axioms` reports: exactly `[propext, Classical.choice, Quot.sound]`
 - Endpoint closure: sorry-free
 - Project axioms and unsafe trust escapes found: none
 - Pinned manifest changed during verification: no
 - Pinned mathlib checkout dirty after acquisition: no
-- `lake build`: completed successfully
+- Complete `lake build`: passed
 
-The build-job count is intentionally not used as a release identifier: it can reflect build progress and cache organization. The durable identifiers are the capsule version, Git commit, ZIP checksum, toolchain commit, mathlib commit, and manifest checksum.
+The build-job count is intentionally not used as a release identifier because it can reflect cache organization. The durable identifiers are the capsule version, Zenodo DOI, ZIP checksum, toolchain commit, mathlib commit, and manifest checksum.
 
 ## What is verified
 
-The archive's `STATEMENT_CROSSWALK.md` gives the complete paper-facing boundary. Version 1.1.0 contains eleven advertised declarations covering:
+The archive's `STATEMENT_CROSSWALK.md` gives the complete paper-facing boundary. The thirteen public declarations cover:
 
 - Proposition 4.1;
 - Theorems 4.2, 5.1, and 5.2;
-- the uniform `A_{m,p}` and `V_{m,p}` equivalents (6.2) and (6.4);
-- the exact square variance refinement (6.5); and
+- all clauses of Proposition 6.1, including the uniform equivalents, growing-gap formula (6.3), refined square variance (6.5), and hard-edge identity (6.6); and
 - the sharp supremum and decimal constant in Corollary 6.2.
 
-Lean checks the encoded declarations and their formal dependencies. It does not by itself certify manuscript prose, bibliography, attribution claims, simulations, or every numbered manuscript equation.
+Lean checks the encoded declarations and their formal dependencies. It does not kernel-check ordinary manuscript prose, bibliographic priority, or attribution claims.
 
 ## Exact software versions
 
@@ -83,4 +84,4 @@ Lean checks the encoded declarations and their formal dependencies. It does not 
 - Lean commit: `d8b18978322de05a8f3dba51ef03cf5461676c17`
 - mathlib commit: `641fbd329d4ffb62bef83c51f54088469056bd36`
 
-All remaining Lean package revisions are pinned in `lake-manifest.json`. See `README.md`, `STATEMENT_CROSSWALK.md`, `REPRODUCIBILITY.md`, `SCOPE.md`, and `COPYRIGHT.md` inside the extracted capsule.
+All remaining Lean package revisions are pinned in `lake-manifest.json`. Inside the extracted capsule, see `README.md`, `STATEMENT_CROSSWALK.md`, `REPRODUCIBILITY.md`, `SCOPE.md`, `RELEASE_NOTES.md`, and `LICENSE`.
