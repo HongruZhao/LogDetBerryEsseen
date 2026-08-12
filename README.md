@@ -77,7 +77,8 @@ Lean checks the encoded declarations and their formal dependencies. It does not 
 
 ## Exact software versions
 
-- Elan: version manager; it installs the toolchain named below from `lean-toolchain`
+- Elan used for the recorded run: `4.2.3` (version manager, not a proof dependency)
+- Lake used for the recorded run: `5.0.0-src+d8b1897`
 - Lean toolchain tag: `leanprover/lean4:v4.33.0-rc2`
 - Lean commit: `d8b18978322de05a8f3dba51ef03cf5461676c17`
 - mathlib commit: `641fbd329d4ffb62bef83c51f54088469056bd36`
