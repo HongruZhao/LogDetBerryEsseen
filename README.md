@@ -17,8 +17,7 @@ Version 1.1.0 adds the exact Lean theorem for the square-variance refinement (6.
 LogdetLean.tendsto_square_nullVSeries_sub_two_log
 ```
 
-It proves
-`$V_{p,p}-2\log p\to 2\gamma_E+\pi^2/4`$ in the notation of the paper.
+In the paper's notation, it proves `V_{p,p} - 2 log p -> 2 gamma_E + pi^2/4`.
 
 The previous [v1.0.0 archive](./logdet_Berry_Esseen_PTRF_Lean_verification_v1.0.0.zip) is retained for history.
 
@@ -70,7 +69,7 @@ The archive's `STATEMENT_CROSSWALK.md` gives the complete paper-facing boundary.
 
 - Proposition 4.1;
 - Theorems 4.2, 5.1, and 5.2;
-- the uniform (A_{m,p}) and (V_{m,p}) equivalents (6.2) and (6.4);
+- the uniform `A_{m,p}` and `V_{m,p}` equivalents (6.2) and (6.4);
 - the exact square variance refinement (6.5); and
 - the sharp supremum and decimal constant in Corollary 6.2.
 
