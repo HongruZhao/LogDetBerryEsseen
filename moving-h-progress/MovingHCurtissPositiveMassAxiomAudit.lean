@@ -1,0 +1,4 @@
+import LogdetLean.Coherence.MovingHCurtissPositiveMass
+
+#print axioms LogdetLean.Coherence.eventually_exactVoidFactor_ge_pos_of_M3_P1
+#print axioms LogdetLean.Coherence.eventually_leadingVoidMeasure_mass_ge_pos_of_M3_P1_laplace
