@@ -1,0 +1,5 @@
+artifact_id=9245621793
+artifact_url=https://github.com/HongruZhao/logdet_Berry_Essen_lean/actions/runs/31879151832/artifacts/9245621793
+artifact_digest=dac399e6047d25263dd7dda27b176902f3ef7e47a84eda2a4fa3dcb4a1dbe9fc
+workflow_run_id=31879151832
+head_sha=2d24a950fedcf28e2bc765edc2b5c7fffef60ca0
