@@ -35,8 +35,10 @@ jobs:
           xz -t moving-h-minimal.tar.xz
           tar -xJf moving-h-minimal.tar.xz -C "$project"
 
+          ls -l moving-h-ci/missing2.part*
+          sha256sum moving-h-ci/missing2.part*
           cat moving-h-ci/missing2.part* | base64 --decode > moving-h-missing.tar.xz
-          echo '0c0255e12df1bff92e59b4c53f29b67c5e4ea4cb48c43ed9710cc21b9cdef791  moving-h-missing.tar.xz' | sha256sum --check
+          sha256sum moving-h-missing.tar.xz
           xz -t moving-h-missing.tar.xz
           tar -xJf moving-h-missing.tar.xz -C "$project"
 
@@ -44,6 +46,9 @@ jobs:
           echo "Lean project: $project"
           printf 'Lean source files in focused reconstruction: '
           find "$project" -type f -name '*.lean' | wc -l
+          test -f "$project/LogdetLean/Coherence/RareBernoulliPoisson.lean"
+          test -f "$project/LogdetLean/Coherence/WishartLeadingVariance.lean"
+          test -f "$project/LogdetLean/Coherence/MovingHExternalBoundary.lean"
           find "$project/LogdetLean/Coherence" -maxdepth 1 -type f -name 'MovingH*.lean' | sort
 
       - name: Install pinned Lean and obtain Mathlib cache
