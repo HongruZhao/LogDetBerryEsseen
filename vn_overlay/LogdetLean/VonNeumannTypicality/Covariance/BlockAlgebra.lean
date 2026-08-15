@@ -88,26 +88,33 @@ theorem symplectic_covariance_square
       _ = M := neg_neg M
   have hquad : (Ω * M) * (Ω * M) = M * M := by
     calc
-      (Ω * M) * (Ω * M) = ((Ω * M) * Ω) * M := by
-        rw [mul_assoc]
+      (Ω * M) * (Ω * M) = ((Ω * M) * Ω) * M :=
+        (mul_assoc (Ω * M) Ω M).symm
       _ = M * M := by rw [hright]
   have hlinear :
       Ω * (c • (1 : Matrix (n ⊕ n) (n ⊕ n) ℝ) + d • M) =
         c • Ω + d • (Ω * M) := by
     simp [mul_add, mul_smul]
-  rw [hlinear, pow_two]
-  calc
-    (c • Ω + d • (Ω * M)) * (c • Ω + d • (Ω * M)) =
-        (c * c) • (Ω * Ω) + (c * d) • (Ω * (Ω * M)) +
-          ((d * c) • ((Ω * M) * Ω) +
-            (d * d) • ((Ω * M) * (Ω * M))) := by
-      simp only [add_mul, mul_add, smul_mul, mul_smul, smul_smul]
-    _ = -(c ^ 2) • (1 : Matrix (n ⊕ n) (n ⊕ n) ℝ) +
-          d ^ 2 • (M ^ 2) := by
-      rw [hΩsq, hleft, hright, hquad]
-      simp only [smul_neg, pow_two]
-      rw [mul_comm d c]
-      abel
+  have hA2 :
+      (c • Ω) * (c • Ω) =
+        -(c * c) • (1 : Matrix (n ⊕ n) (n ⊕ n) ℝ) := by
+    rw [smul_mul, mul_smul, hΩsq]
+    simp [smul_smul]
+  have hAB :
+      (c • Ω) * (d • (Ω * M)) = -(c * d) • M := by
+    rw [smul_mul, mul_smul, hleft]
+    simp [smul_smul]
+  have hBA :
+      (d • (Ω * M)) * (c • Ω) = (c * d) • M := by
+    rw [smul_mul, mul_smul, hright]
+    simp [smul_smul, mul_comm]
+  have hB2 :
+      (d • (Ω * M)) * (d • (Ω * M)) = (d * d) • (M * M) := by
+    rw [smul_mul, mul_smul, hquad]
+    simp [smul_smul]
+  rw [hlinear, pow_two, add_mul, mul_add, mul_add]
+  rw [hA2, hAB, hBA, hB2]
+  abel
 
 /-- Equation (17) before multiplying by `i`: `(Ωσ)^2=-c^2 I+d^2M^2`. -/
 theorem manuscript_omega_covariance_square
