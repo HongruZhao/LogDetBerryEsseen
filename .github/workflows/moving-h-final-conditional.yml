@@ -24,14 +24,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          exec > >(tee "$GITHUB_WORKSPACE/moving-h-reconstruct.log") 2>&1
           rm -rf working
           mkdir working
           unzip -q logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip -d working
-          project="$(find working -type f -name lean-toolchain -printf '%h\n' | head -n 1)"
-          if [ -z "$project" ]; then
+          project_file="$(find working -type f -name lean-toolchain -print -quit)"
+          if [ -z "$project_file" ]; then
             echo 'No Lean project was found in the archived release.' >&2
             exit 1
           fi
+          project="${project_file%/lean-toolchain}"
 
           cat moving-h-ci/minimal.part* | base64 --decode > moving-h-minimal.tar.xz
           echo '0bc21734f177e621e498b15dba3a80ef32192b8e8645957fc8f7dadc13ecfc2f  moving-h-minimal.tar.xz' | sha256sum --check
@@ -52,8 +54,6 @@ jobs:
           cp moving-h-final/MovingHConditionalKernelEndpointAxiomAudit.lean \
             "$project/LogdetLean/Coherence/MovingHConditionalKernelEndpointAxiomAudit.lean"
 
-          # Remove the former project-axiom boundary.  The final theorem imports
-          # MovingHDirectCDFPath directly and does not depend on this module.
           rm -f "$project/LogdetLean/Coherence/MovingHExternalBoundary.lean"
           rm -f "$project/LogdetLean/Coherence/MovingHExternalBoundaryAxiomAudit.lean"
 
@@ -111,36 +111,61 @@ jobs:
           from pathlib import Path
           import re
 
-          root = Path('.')
-          files = sorted(root.rglob('*.lean'))
-          axiom = re.compile(r'^\s*(axiom|opaque)\s+', re.MULTILINE)
-          placeholder = re.compile(r'(^|[^A-Za-z0-9_])(sorry|admit)([^A-Za-z0-9_]|$)')
-          axiom_files = []
-          placeholder_files = []
+          files = sorted(Path('.').rglob('*.lean'))
+          decl = re.compile(r'^\s*(axiom|opaque)\s+', re.MULTILINE)
+          token = re.compile(r'(^|[^A-Za-z0-9_])(sorry|admit)([^A-Za-z0-9_]|$)')
+          decl_files = []
+          token_files = []
           legacy_files = []
           for path in files:
               if '.lake' in path.parts:
                   continue
               text = path.read_text(encoding='utf-8')
-              if axiom.search(text):
-                  axiom_files.append(str(path))
-              code = '\n'.join(line.split('--', 1)[0] for line in text.splitlines())
-              if placeholder.search(code):
-                  placeholder_files.append(str(path))
+              if decl.search(text):
+                  decl_files.append(str(path))
+              code_lines = []
+              in_block = False
+              for line in text.splitlines():
+                  out = ''
+                  i = 0
+                  while i < len(line):
+                      if in_block:
+                          end = line.find('-/', i)
+                          if end < 0:
+                              i = len(line)
+                          else:
+                              in_block = False
+                              i = end + 2
+                      else:
+                          block = line.find('/-', i)
+                          dash = line.find('--', i)
+                          if dash >= 0 and (block < 0 or dash < block):
+                              out += line[i:dash]
+                              i = len(line)
+                          elif block >= 0:
+                              out += line[i:block]
+                              in_block = True
+                              i = block + 2
+                          else:
+                              out += line[i:]
+                              i = len(line)
+                  code_lines.append(out)
+              if token.search('\n'.join(code_lines)):
+                  token_files.append(str(path))
               if ('external_paperHighDimensionalWishartInput' in text or
                   'external_paperFiniteMeasureCurtissBridge' in text):
                   legacy_files.append(str(path))
           print(f'LEAN_SOURCE_FILES={len(files)}')
-          print(f'PROJECT_AXIOM_OR_OPAQUE_FILES={len(axiom_files)}')
-          for path in axiom_files:
+          print(f'PROJECT_AXIOM_OR_OPAQUE_FILES={len(decl_files)}')
+          for path in decl_files:
               print(f'  {path}')
-          print(f'SORRY_OR_ADMIT_FILES={len(placeholder_files)}')
-          for path in placeholder_files:
+          print(f'SORRY_OR_ADMIT_FILES={len(token_files)}')
+          for path in token_files:
               print(f'  {path}')
           print(f'LEGACY_EXTERNAL_AXIOM_REFERENCE_FILES={len(legacy_files)}')
           for path in legacy_files:
               print(f'  {path}')
-          if axiom_files or placeholder_files or legacy_files:
+          if decl_files or token_files or legacy_files:
               raise SystemExit(1)
           PY
 
@@ -163,6 +188,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p moving-h-final/evidence
+          cp "$GITHUB_WORKSPACE/moving-h-reconstruct.log" moving-h-final/evidence/
           cp "$GITHUB_WORKSPACE/moving-h-final-build.log" moving-h-final/evidence/
           cp "$GITHUB_WORKSPACE/moving-h-final-axioms.log" moving-h-final/evidence/
           cp "$GITHUB_WORKSPACE/moving-h-final-integrity.log" moving-h-final/evidence/
@@ -191,6 +217,7 @@ jobs:
         with:
           name: moving-h-final-conditional-verification
           path: |
+            moving-h-reconstruct.log
             moving-h-final-build.log
             moving-h-final-axioms.log
             moving-h-final-integrity.log
