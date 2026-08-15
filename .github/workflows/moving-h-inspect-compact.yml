@@ -1,0 +1,34 @@
+name: Inspect moving-H baseline compact
+
+on:
+  push:
+    branches:
+      - moving-h-lean-audit-20260815
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Print compact moving-H interface
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf inspect && mkdir inspect
+          unzip -q logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip -d inspect
+          coherence="$(find inspect -type d -path '*/LogdetLean/Coherence' | head -n 1)"
+          project="${coherence%/LogdetLean/Coherence}"
+          echo "PROJECT=$project"
+          echo '=== FILES ==='
+          find "$coherence" -maxdepth 1 -type f -name 'MovingH*.lean' -printf '%f\n' | sort
+          echo '=== EXACT MATCHES ==='
+          grep -RIn --include='*.lean' -E '^(def|theorem|lemma|structure|class) (MovingH|Paper|movingPaper|movingAccompanying|movingMatrix|movingScalar).*' "$coherence" | grep -E 'CDF|Contract|CLT|Laplace|Pasteup|Product|Joint|Matrix|Scalar' | sed -n '1,500p' || true
+          echo '=== CONTEXT AROUND CDF CONTRACTS ==='
+          for term in MovingHCDFCompanionLaw MovingHCDFResidualConvergence movingPaperJointCDFLimit movingPaperMatrixCDFLimit PaperMatrixExtremeCDFContract PaperDampedPasteupContract MovingHLindebergCLTWitness; do
+            echo "--- $term"
+            grep -RIn --include='*.lean' -B 4 -A 18 "$term" "$coherence" | sed -n '1,180p' || true
+          done
