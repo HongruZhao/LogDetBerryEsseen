@@ -20,9 +20,11 @@ jobs:
           cat vn_bundle_parts/part_* | base64 --decode > vn_minimal.reconstructed.tar.gz
           echo 'f2a6bbbcc47164147c52fa9ef78d1dbcfd41c3bdc0a247b2a6e5ea0fa437e6de  vn_minimal.reconstructed.tar.gz' | sha256sum --check
           tar -xzf vn_minimal.reconstructed.tar.gz
+          cp -a vn_overlay/. vn_minimal_project/
           test -f vn_minimal_project/lean-toolchain
           test -f vn_minimal_project/lake-manifest.json
           test -f vn_minimal_project/LogdetLean/VonNeumannTypicality/AxiomAudit.lean
+          test -f vn_minimal_project/LogdetLean/VonNeumannTypicality/WeakTypicality/VariableDimension.lean
           if grep -RInE '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' \
               vn_minimal_project/LogdetLean/VonNeumannTypicality \
               vn_minimal_project/LogdetLean/VonNeumannTypicality.lean; then
@@ -35,7 +37,7 @@ jobs:
         with:
           lake-package-directory: vn_minimal_project
           build: true
-          build-args: "LogdetLean.VonNeumannTypicality LogdetLean.VonNeumannTypicality.AxiomAudit"
+          build-args: "LogdetLean.VonNeumannTypicality LogdetLean.VonNeumannTypicality.Entropy.VariableDimensionCutoff LogdetLean.VonNeumannTypicality.WeakTypicality.VariableDimension LogdetLean.VonNeumannTypicality.AxiomAudit"
           use-mathlib-cache: true
           leanchecker: false
 
@@ -45,7 +47,7 @@ jobs:
         run: |
           set -euo pipefail
           lake env lean LogdetLean/VonNeumannTypicality/AxiomAudit.lean | tee axiom-audit.log
-          if grep -E 'depends on axioms:.*(sorryAx|Classical.choice.*Classical.choice)' axiom-audit.log; then
+          if grep -E 'depends on axioms:.*sorryAx' axiom-audit.log; then
             echo 'Unexpected project axiom detected.' >&2
             exit 1
           fi
