@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Write an import-light, kernel-checkable Curtiss progress module.
 
-The theorem statements are generic finite-measure facts.  They can be
+The theorem statements are generic finite-measure facts. They can be
 imported by the full moving-H handoff without depending on the large
 Coherence import graph, which makes focused CI reliable.
 """
@@ -16,8 +16,7 @@ root = Path(sys.argv[1])
 source = root / "LogdetLean/FiniteMeasureCurtissProgress.lean"
 audit = root / "LogdetLean/FiniteMeasureCurtissProgressAxiomAudit.lean"
 
-source.write_text(r'''import Mathlib.Probability.Moments.Basic
-import Mathlib.Tactic
+source.write_text(r'''import Mathlib
 
 /-!
 # Import-light progress toward the finite-measure Curtiss bridge
@@ -41,7 +40,7 @@ noncomputable section
 /-- Uniform real-Laplace approximation to a Gaussian MGF times a moving
 finite-measure mass. -/
 def FiniteMeasureGaussianLaplaceApproximation
-    (nu : ℕ → ℝ → FiniteMeasure ℝ) (mass : ℕ → ℝ → ℝ) : Prop :=
+    (nu : ℕ → ℝ → MeasureTheory.FiniteMeasure ℝ) (mass : ℕ → ℝ → ℝ) : Prop :=
   ∀ L U : ℝ, 0 ≤ L → 0 < U → ∀ epsilon : ℝ, 0 < epsilon →
     ∀ᶠ p in atTop, ∀ v x : ℝ, |v| ≤ U → |x| ≤ L →
       |∫ y, Real.exp (v * y) ∂(nu p x : Measure ℝ) -
@@ -50,7 +49,7 @@ def FiniteMeasureGaussianLaplaceApproximation
 /-- Specializing the real-Laplace approximation at zero gives uniform
 control of the total mass. -/
 theorem finiteMeasureGaussianMassApproximation_of_laplace
-    {nu : ℕ → ℝ → FiniteMeasure ℝ} {mass : ℕ → ℝ → ℝ}
+    {nu : ℕ → ℝ → MeasureTheory.FiniteMeasure ℝ} {mass : ℕ → ℝ → ℝ}
     (hLaplace : FiniteMeasureGaussianLaplaceApproximation nu mass) :
     ∀ L : ℝ, 0 ≤ L → ∀ epsilon : ℝ, 0 < epsilon →
       ∀ᶠ p in atTop, ∀ x : ℝ, |x| ≤ L →
@@ -64,10 +63,10 @@ theorem finiteMeasureGaussianMassApproximation_of_laplace
     integral_const, smul_eq_mul, mul_one] using hzero
 
 /-- The vanishing-mass branch of the finite-measure Curtiss conclusion is
-purely order-theoretic.  It uses only the mass estimate and the fact that the
+purely order-theoretic. It uses only the mass estimate and the fact that the
 comparison CDF factor lies in `[0,1]`. -/
 theorem finiteMeasureCDFApproximation_of_small_mass
-    {nu : ℕ → ℝ → FiniteMeasure ℝ} {mass : ℕ → ℝ → ℝ}
+    {nu : ℕ → ℝ → MeasureTheory.FiniteMeasure ℝ} {mass : ℕ → ℝ → ℝ}
     {F : ℝ → ℝ}
     (hmass : ∀ p x, 0 ≤ mass p x)
     (hF : ∀ z, 0 ≤ F z ∧ F z ≤ 1)
