@@ -35,7 +35,7 @@ jobs:
           xz -t moving-h-minimal.tar.xz
           tar -xJf moving-h-minimal.tar.xz -C "$project"
 
-          cat moving-h-ci/missing.part* | base64 --decode > moving-h-missing.tar.xz
+          cat moving-h-ci/missing2.part* | base64 --decode > moving-h-missing.tar.xz
           echo '0c0255e12df1bff92e59b4c53f29b67c5e4ea4cb48c43ed9710cc21b9cdef791  moving-h-missing.tar.xz' | sha256sum --check
           xz -t moving-h-missing.tar.xz
           tar -xJf moving-h-missing.tar.xz -C "$project"
