@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Apply the first unconditional finite-measure Curtiss reduction lemma.
 
-This script patches the complete moving-H handoff reconstructed by CI.  It is
+This script patches the focused moving-H handoff reconstructed by CI. It is
 idempotent and refuses to continue when the expected source marker is absent.
 """
 
@@ -48,9 +48,16 @@ print_line = (
     "#print axioms "
     "LogdetLean.Coherence.paperFiniteMeasureGaussianMassApproximation_of_laplace"
 )
-audit_text = audit.read_text()
-if print_line not in audit_text:
-    audit.write_text(audit_text.rstrip() + "\n\n" + print_line + "\n")
+if audit.exists():
+    audit_text = audit.read_text()
+    if print_line not in audit_text:
+        audit.write_text(audit_text.rstrip() + "\n\n" + print_line + "\n")
+else:
+    audit.write_text(
+        "import LogdetLean.Coherence.MovingHCurtissVoidBridge\n\n"
+        + print_line
+        + "\n"
+    )
 
 print(f"patched {bridge}")
-print(f"patched {audit}")
+print(f"prepared {audit}")
