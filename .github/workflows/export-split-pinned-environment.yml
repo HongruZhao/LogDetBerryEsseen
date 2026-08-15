@@ -1,0 +1,183 @@
+name: Export split pinned Lean environment
+
+on:
+  push:
+    branches:
+      - moving-h-env-split-20260815
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export-split:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out split-export branch
+        uses: actions/checkout@v4
+
+      - name: Reconstruct the archived project
+        id: locate
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf portable envsplit
+          mkdir portable envsplit
+          unzip -q logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip -d portable
+          project="$(find portable -type f -name lean-toolchain -printf '%h\n' | head -n 1)"
+          test -n "$project"
+          echo "project=$project" >> "$GITHUB_OUTPUT"
+          echo "Project: $project"
+
+      - name: Install exact Lean and obtain the pinned Mathlib cache
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: ${{ steps.locate.outputs.project }}
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          nanoda: false
+
+      - name: Stream checksummed archives into retrievable parts
+        shell: bash
+        run: |
+          set -euo pipefail
+          project='${{ steps.locate.outputs.project }}'
+          toolroot="$HOME/.elan/toolchains"
+          toolname='leanprover--lean4---v4.33.0-rc2'
+          test -d "$toolroot/$toolname"
+          test -d "$project/.lake/packages"
+
+          tar -cf - -C "$toolroot" "$toolname" \
+            | zstd -8 -T0 \
+            | tee >(sha256sum | awk '{print $1"  lean-toolchain-v4.33.0-rc2.tar.zst"}' > envsplit/toolchain-archive.sha256) \
+            | split -b 400000000 -d -a 2 - envsplit/toolchain.part
+
+          tar -cf - -C "$project/.lake" packages \
+            | zstd -8 -T0 \
+            | tee >(sha256sum | awk '{print $1"  mathlib-packages-641fbd3.tar.zst"}' > envsplit/mathlib-archive.sha256) \
+            | split -b 400000000 -d -a 2 - envsplit/mathlib.part
+
+          sha256sum envsplit/toolchain.part* envsplit/mathlib.part* > envsplit/parts.sha256
+          {
+            echo 'lean=4.33.0-rc2'
+            echo 'lean_commit=d8b18978322de05a8f3dba51ef03cf5461676c17'
+            echo 'mathlib_commit=641fbd329d4ffb62bef83c51f54088469056bd36'
+            echo 'part_bytes=400000000'
+            echo
+            cat envsplit/toolchain-archive.sha256
+            cat envsplit/mathlib-archive.sha256
+            echo
+            ls -l envsplit/toolchain.part* envsplit/mathlib.part*
+          } > envsplit/MANIFEST.txt
+          cat envsplit/MANIFEST.txt
+          cat envsplit/parts.sha256
+
+      - name: Upload manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-env-manifest
+          compression-level: 0
+          path: |
+            envsplit/MANIFEST.txt
+            envsplit/parts.sha256
+            envsplit/toolchain-archive.sha256
+            envsplit/mathlib-archive.sha256
+          if-no-files-found: error
+
+      - name: Upload toolchain part 00
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-toolchain-part00
+          compression-level: 0
+          path: envsplit/toolchain.part00
+          if-no-files-found: error
+
+      - name: Upload toolchain part 01
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-toolchain-part01
+          compression-level: 0
+          path: envsplit/toolchain.part01
+          if-no-files-found: error
+
+      - name: Upload toolchain part 02 if present
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-toolchain-part02
+          compression-level: 0
+          path: envsplit/toolchain.part02
+          if-no-files-found: ignore
+
+      - name: Upload Mathlib part 00
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-mathlib-part00
+          compression-level: 0
+          path: envsplit/mathlib.part00
+          if-no-files-found: error
+
+      - name: Upload Mathlib part 01
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-mathlib-part01
+          compression-level: 0
+          path: envsplit/mathlib.part01
+          if-no-files-found: error
+
+      - name: Upload Mathlib part 02
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-mathlib-part02
+          compression-level: 0
+          path: envsplit/mathlib.part02
+          if-no-files-found: error
+
+      - name: Upload Mathlib part 03
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-mathlib-part03
+          compression-level: 0
+          path: envsplit/mathlib.part03
+          if-no-files-found: error
+
+      - name: Upload Mathlib part 04
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-mathlib-part04
+          compression-level: 0
+          path: envsplit/mathlib.part04
+          if-no-files-found: error
+
+      - name: Upload Mathlib part 05
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-mathlib-part05
+          compression-level: 0
+          path: envsplit/mathlib.part05
+          if-no-files-found: error
+
+      - name: Upload Mathlib part 06 if present
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-mathlib-part06
+          compression-level: 0
+          path: envsplit/mathlib.part06
+          if-no-files-found: ignore
+
+      - name: Upload Mathlib part 07 if present
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-mathlib-part07
+          compression-level: 0
+          path: envsplit/mathlib.part07
+          if-no-files-found: ignore
+
+      - name: Upload Mathlib part 08 if present
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-mathlib-part08
+          compression-level: 0
+          path: envsplit/mathlib.part08
+          if-no-files-found: ignore
