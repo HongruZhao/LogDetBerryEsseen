@@ -1,0 +1,108 @@
+name: Moving-H Curtiss progress verification
+
+on:
+  push:
+    branches:
+      - moving-h-progress2-20260815
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  curtiss-mass-normalization:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out progress branch
+        uses: actions/checkout@v4
+
+      - name: Reconstruct focused moving-H project
+        id: locate
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf working
+          mkdir working
+          unzip -q logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip -d working
+          project="$(find working -type f -name lean-toolchain -printf '%h\n' | head -n 1)"
+          if [ -z "$project" ]; then
+            echo 'No Lean project was found in the archived release.' >&2
+            exit 1
+          fi
+
+          cat moving-h-ci/minimal.part* | base64 --decode > moving-h-minimal.tar.xz
+          echo '0bc21734f177e621e498b15dba3a80ef32192b8e8645957fc8f7dadc13ecfc2f  moving-h-minimal.tar.xz' | sha256sum --check
+          xz -t moving-h-minimal.tar.xz
+          tar -xJf moving-h-minimal.tar.xz -C "$project"
+
+          cat moving-h-ci/missing2.part* | base64 --decode > moving-h-missing.tar.xz
+          echo '413b030b0418a460ede451bd80232b9575c9ee5a79525e266dbeaca2b0af4c45  moving-h-missing.tar.xz' | sha256sum --check
+          xz -t moving-h-missing.tar.xz
+          tar -xJf moving-h-missing.tar.xz -C "$project"
+
+          python3 moving-h-progress/apply_curtiss_mass_patch.py "$project"
+
+          echo "project=$project" >> "$GITHUB_OUTPUT"
+          echo "Lean project: $project"
+          lean_count="$(find "$project" -type f -name '*.lean' | wc -l)"
+          echo "Focused Lean source count: $lean_count"
+          test "$lean_count" -ge 159
+          test -f "$project/LogdetLean/Coherence/RareBernoulliPoisson.lean"
+          test -f "$project/LogdetLean/WishartLeadingVariance.lean"
+          test -f "$project/LogdetLean/Coherence/MovingHCurtissVoidBridge.lean"
+          grep -n 'paperFiniteMeasureGaussianMassApproximation_of_laplace' \
+            "$project/LogdetLean/Coherence/MovingHCurtissVoidBridge.lean"
+
+      - name: Install pinned Lean and obtain Mathlib cache
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: ${{ steps.locate.outputs.project }}
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          nanoda: false
+
+      - name: Build focused Curtiss audit module
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          lake build LogdetLean.Coherence.MovingHCurtissVoidBridgeAxiomAudit \
+            2>&1 | tee "$GITHUB_WORKSPACE/curtiss-focused-build.log"
+
+      - name: Elaborate permanent axiom audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          lake env lean LogdetLean/Coherence/MovingHCurtissVoidBridgeAxiomAudit.lean \
+            2>&1 | tee "$GITHUB_WORKSPACE/curtiss-axioms.log"
+          grep -F 'paperFiniteMeasureGaussianMassApproximation_of_laplace' \
+            "$GITHUB_WORKSPACE/curtiss-axioms.log"
+
+      - name: Record truth-boundary and placeholder scans
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          {
+            echo '# New theorem source scan'
+            grep -RInE --include='MovingHCurtissVoidBridge*.lean' \
+              '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' \
+              LogdetLean/Coherence || true
+            echo
+            echo '# Deliberately retained external boundary'
+            grep -RInE --include='MovingHExternalBoundary.lean' \
+              '^[[:space:]]*axiom[[:space:]]+' LogdetLean/Coherence || true
+          } | tee "$GITHUB_WORKSPACE/curtiss-truth-boundary.log"
+
+      - name: Upload progress evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-curtiss-progress-evidence
+          path: |
+            curtiss-focused-build.log
+            curtiss-axioms.log
+            curtiss-truth-boundary.log
+          if-no-files-found: error
