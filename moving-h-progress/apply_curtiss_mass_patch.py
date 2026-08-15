@@ -34,7 +34,7 @@ theorem paperFiniteMeasureGaussianMassApproximation_of_laplace
   intro x hx
   have hzero := hp 0 x (by norm_num) hx
   simpa only [zero_mul, Real.exp_zero, zero_pow, zero_div, one_mul,
-    integral_const, one_smul] using hzero
+    integral_const, smul_eq_mul, mul_one] using hzero
 
 '''
 
