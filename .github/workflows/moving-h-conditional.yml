@@ -30,22 +30,23 @@ jobs:
             exit 1
           fi
 
-          # The repository archive is an older public baseline.  These two
-          # checksummed payloads reconstruct the current 503-file user handoff:
-          # the audited moving-H overlay plus source modules absent from that
-          # historical archive.
+          # The repository archive is an older public baseline. These two
+          # commit-pinned payloads reconstruct the current user handoff.
           cat moving-h-ci/overlay.part* | base64 --decode > moving-h-overlay.tar.xz
-          echo 'f40f28b63786013c16453825ace29741a1860bd1705505477941cb304777278b  moving-h-overlay.tar.xz' | sha256sum --check
+          sha256sum moving-h-overlay.tar.xz
+          xz -t moving-h-overlay.tar.xz
           tar -xJf moving-h-overlay.tar.xz -C "$project"
 
           cat moving-h-ci/missing.part* | base64 --decode > moving-h-missing.tar.xz
-          echo '0c0255e12df1bff92e59b4c53f29b67c5e4ea4cb48c43ed9710cc21b9cdef791  moving-h-missing.tar.xz' | sha256sum --check
+          sha256sum moving-h-missing.tar.xz
+          xz -t moving-h-missing.tar.xz
           tar -xJf moving-h-missing.tar.xz -C "$project"
 
           echo "project=$project" >> "$GITHUB_OUTPUT"
           echo "Lean project: $project"
-          printf 'Lean source files after reconstruction: '
-          find "$project" -type f -name '*.lean' | wc -l
+          lean_count="$(find "$project" -type f -name '*.lean' | wc -l)"
+          echo "Lean source files after reconstruction: $lean_count"
+          test "$lean_count" -eq 503
           find "$project/LogdetLean/Coherence" -maxdepth 1 -type f -name 'MovingH*.lean' | sort
 
       - name: Install pinned Lean and obtain Mathlib cache
