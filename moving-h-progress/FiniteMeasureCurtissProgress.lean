@@ -3,12 +3,14 @@ import Mathlib
 /-!
 # Import-light progress toward the finite-measure Curtiss bridge
 
-This module proves two unconditional reductions needed by the moving-H
+This module proves three unconditional reductions needed by the moving-H
 finite-subprobability argument.
 
 * Real-Laplace convergence at zero controls the total mass.
 * Once the moving target mass is small, the desired CDF approximation is
   elementary and needs no transform-uniqueness theorem.
+* The full finite-measure conclusion reduces exactly to the positive-mass
+  branch.
 
 The remaining positive-mass branch is the genuine Curtiss/uniqueness step.
 -/
@@ -81,6 +83,40 @@ theorem finiteMeasureCDFApproximation_of_small_mass
     mul_le_of_le_one_left (hmass p x) hF1
   rw [abs_lt]
   constructor <;> linarith
+
+/-- Uniform CDF approximation restricted to the only genuinely analytic
+case, where the moving target mass is bounded below at the requested error
+scale. -/
+def FiniteMeasureGaussianPositiveMassCDFApproximation
+    (nu : ℕ → ℝ → MeasureTheory.FiniteMeasure ℝ)
+    (mass : ℕ → ℝ → ℝ) (F : ℝ → ℝ) : Prop :=
+  ∀ L : ℝ, 0 ≤ L → ∀ epsilon : ℝ, 0 < epsilon →
+    ∀ᶠ p in atTop, ∀ z x : ℝ, |x| ≤ L → epsilon / 4 < mass p x →
+      |(nu p x : Measure ℝ).real (Iic z) - F z * mass p x| < epsilon
+
+/-- Combining the elementary small-mass branch with a positive-mass
+Curtiss input gives the full moving finite-measure CDF approximation. -/
+theorem finiteMeasureGaussianCDFApproximation_of_positiveMass
+    {nu : ℕ → ℝ → MeasureTheory.FiniteMeasure ℝ} {mass : ℕ → ℝ → ℝ}
+    {F : ℝ → ℝ}
+    (hmass : ∀ p x, 0 ≤ mass p x)
+    (hF : ∀ z, 0 ≤ F z ∧ F z ≤ 1)
+    (hLaplace : FiniteMeasureGaussianLaplaceApproximation nu mass)
+    (hpositive :
+      FiniteMeasureGaussianPositiveMassCDFApproximation nu mass F) :
+    ∀ L : ℝ, 0 ≤ L → ∀ epsilon : ℝ, 0 < epsilon →
+      ∀ᶠ p in atTop, ∀ z x : ℝ, |x| ≤ L →
+        |(nu p x : Measure ℝ).real (Iic z) - F z * mass p x| < epsilon := by
+  intro L hL epsilon hepsilon
+  filter_upwards
+      [finiteMeasureCDFApproximation_of_small_mass
+        hmass hF hLaplace L hL epsilon hepsilon,
+       hpositive L hL epsilon hepsilon]
+      with p hsmall hlarge
+  intro z x hx
+  by_cases hm : mass p x ≤ epsilon / 4
+  · exact hsmall z x hx hm
+  · exact hlarge z x hx (lt_of_not_ge hm)
 
 end
 
