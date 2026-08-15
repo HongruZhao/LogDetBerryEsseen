@@ -59,7 +59,7 @@ theorem finiteMeasureGaussianMassApproximation_of_laplace
     with p hp
   intro x hx
   have hzero := hp 0 x (by norm_num) hx
-  simpa only [zero_mul, Real.exp_zero, zero_pow, zero_div, one_mul,
+  simpa only [zero_mul, Real.exp_zero, pow_two, zero_div, one_mul,
     integral_const, smul_eq_mul, mul_one] using hzero
 
 /-- The vanishing-mass branch of the finite-measure Curtiss conclusion is
