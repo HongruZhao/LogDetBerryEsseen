@@ -39,6 +39,11 @@ jobs:
           xz -t moving-h-missing.tar.xz
           tar -xJf moving-h-missing.tar.xz -C "$project"
 
+          cp moving-h-progress/FiniteMeasureCurtissProgress.lean \
+            "$project/LogdetLean/FiniteMeasureCurtissProgress.lean"
+          cp moving-h-progress/FiniteMeasureCurtissProgressAxiomAudit.lean \
+            "$project/LogdetLean/FiniteMeasureCurtissProgressAxiomAudit.lean"
+
           echo "project=$project" >> "$GITHUB_OUTPUT"
           echo "Lean project: $project"
           lean_count="$(find "$project" -type f -name '*.lean' | wc -l)"
@@ -47,7 +52,7 @@ jobs:
           test -f "$project/LogdetLean/WishartLeadingVariance.lean"
           test -f "$project/LogdetLean/Coherence/MovingHExternalBoundary.lean"
           test -f "$project/LogdetLean/Coherence/MovingHExternalBoundaryAxiomAudit.lean"
-          find "$project/LogdetLean/Coherence" -maxdepth 1 -type f -name 'MovingH*.lean' | sort
+          test -f "$project/LogdetLean/FiniteMeasureCurtissProgressAxiomAudit.lean"
 
       - name: Install pinned Lean and obtain Mathlib cache
         uses: leanprover/lean-action@v1
@@ -59,18 +64,20 @@ jobs:
           use-github-cache: false
           nanoda: false
 
-      - name: Build the focused moving-H audit target
+      - name: Build the finite-measure Curtiss progress audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          lake build LogdetLean.FiniteMeasureCurtissProgressAxiomAudit 2>&1 | tee "$GITHUB_WORKSPACE/curtiss-progress-build.log"
+          lake env lean LogdetLean/FiniteMeasureCurtissProgressAxiomAudit.lean 2>&1 | tee "$GITHUB_WORKSPACE/curtiss-progress-axioms.log"
+
+      - name: Build the focused moving-H boundary audit
         shell: bash
         run: |
           set -euo pipefail
           cd '${{ steps.locate.outputs.project }}'
           lake build LogdetLean.Coherence.MovingHExternalBoundaryAxiomAudit 2>&1 | tee "$GITHUB_WORKSPACE/moving-h-build.log"
-
-      - name: Print theorem axiom dependencies
-        shell: bash
-        run: |
-          set -euo pipefail
-          cd '${{ steps.locate.outputs.project }}'
           lake env lean LogdetLean/Coherence/MovingHExternalBoundaryAxiomAudit.lean 2>&1 | tee "$GITHUB_WORKSPACE/moving-h-axioms.log"
 
       - name: Run source-integrity and endpoint scans
@@ -91,6 +98,8 @@ jobs:
         with:
           name: moving-h-focused-verification-evidence
           path: |
+            curtiss-progress-build.log
+            curtiss-progress-axioms.log
             moving-h-build.log
             moving-h-axioms.log
             moving-h-integrity.log
