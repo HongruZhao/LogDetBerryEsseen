@@ -143,7 +143,12 @@ theorem symplectic_covariance_square
   rw [hlinear, pow_two, add_mul, mul_add, mul_add]
   rw [hA2, hAB, hBA, hB2]
   simp only [pow_two]
-  abel_nf
+  change
+    (-(c * c)) • (1 : Matrix (n ⊕ n) (n ⊕ n) ℝ) +
+        ((-(c * d)) • M + ((c * d) • M + (d * d) • (M * M))) =
+      (-(c * c)) • (1 : Matrix (n ⊕ n) (n ⊕ n) ℝ) +
+        (d * d) • (M * M)
+  simp [add_assoc]
 
 /-- Equation (17) before multiplying by `i`: `(Ωσ)^2=-c^2 I+d^2M^2`. -/
 theorem manuscript_omega_covariance_square
