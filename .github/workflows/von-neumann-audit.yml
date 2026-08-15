@@ -20,7 +20,8 @@ jobs:
           cat vn_bundle_parts/part_* | base64 --decode > vn_minimal.reconstructed.tar.gz
           echo 'f2a6bbbcc47164147c52fa9ef78d1dbcfd41c3bdc0a247b2a6e5ea0fa437e6de  vn_minimal.reconstructed.tar.gz' | sha256sum --check
           tar -xzf vn_minimal.reconstructed.tar.gz
-          cp -a vn_overlay/. vn_minimal_project/
+          echo '3fd6238cfeea6cd2be7e827bc29559834889f3a99efdff6d0b32614d96eb1959  ci/exact_local_overlay.tar.gz' | sha256sum --check
+          tar -xzf ci/exact_local_overlay.tar.gz -C vn_minimal_project
           test -f vn_minimal_project/lean-toolchain
           test -f vn_minimal_project/lake-manifest.json
           test -f vn_minimal_project/LogdetLean/VonNeumannTypicality/AxiomAudit.lean
@@ -32,7 +33,7 @@ jobs:
             exit 1
           fi
 
-      - name: Build paper-specific modules
+      - name: Build exact audited project sources
         uses: leanprover/lean-action@v1
         with:
           lake-package-directory: vn_minimal_project
