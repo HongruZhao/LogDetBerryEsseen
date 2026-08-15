@@ -16,7 +16,7 @@ jobs:
       - name: Check out audit branch
         uses: actions/checkout@v4
 
-      - name: Reconstruct project and apply audited overlay
+      - name: Reconstruct the complete handoff project
         id: locate
         shell: bash
         run: |
@@ -29,11 +29,23 @@ jobs:
             echo 'No Lean project was found in the archived release.' >&2
             exit 1
           fi
-          cat moving-h-ci/minimal.part* | base64 --decode > moving-h-minimal-overlay.tar.xz
-          echo '0bc21734f177e621e498b15dba3a80ef32192b8e8645957fc8f7dadc13ecfc2f  moving-h-minimal-overlay.tar.xz' | sha256sum --check
-          tar -xJf moving-h-minimal-overlay.tar.xz -C "$project"
+
+          # The repository archive is an older public baseline.  These two
+          # checksummed payloads reconstruct the current 503-file user handoff:
+          # the audited moving-H overlay plus source modules absent from that
+          # historical archive.
+          cat moving-h-ci/overlay.part* | base64 --decode > moving-h-overlay.tar.xz
+          echo 'f40f28b63786013c16453825ace29741a1860bd1705505477941cb304777278b  moving-h-overlay.tar.xz' | sha256sum --check
+          tar -xJf moving-h-overlay.tar.xz -C "$project"
+
+          cat moving-h-ci/missing.part* | base64 --decode > moving-h-missing.tar.xz
+          echo '0c0255e12df1bff92e59b4c53f29b67c5e4ea4cb48c43ed9710cc21b9cdef791  moving-h-missing.tar.xz' | sha256sum --check
+          tar -xJf moving-h-missing.tar.xz -C "$project"
+
           echo "project=$project" >> "$GITHUB_OUTPUT"
           echo "Lean project: $project"
+          printf 'Lean source files after reconstruction: '
+          find "$project" -type f -name '*.lean' | wc -l
           find "$project/LogdetLean/Coherence" -maxdepth 1 -type f -name 'MovingH*.lean' | sort
 
       - name: Install pinned Lean and obtain Mathlib cache
@@ -52,6 +64,13 @@ jobs:
           set -euo pipefail
           cd '${{ steps.locate.outputs.project }}'
           lake build LogdetLean.Coherence.MovingHExternalBoundaryAxiomAudit 2>&1 | tee "$GITHUB_WORKSPACE/moving-h-build.log"
+
+      - name: Build the complete Lean project
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          lake build 2>&1 | tee "$GITHUB_WORKSPACE/moving-h-full-build.log"
 
       - name: Print theorem axiom dependencies
         shell: bash
@@ -82,6 +101,7 @@ jobs:
           name: moving-h-conditional-verification-evidence
           path: |
             moving-h-build.log
+            moving-h-full-build.log
             moving-h-axioms.log
             moving-h-integrity.log
             moving-h-endpoints.log
