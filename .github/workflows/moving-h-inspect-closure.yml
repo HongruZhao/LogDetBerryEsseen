@@ -1,0 +1,80 @@
+name: Inspect moving-H closure archive encoding
+
+on:
+  push:
+    branches:
+      - moving-h-lean-audit-20260815
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect encoded closure bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64
+          import lzma
+          import string
+          from pathlib import Path
+
+          path = Path('moving-h-progress/missing-closure.tar.xz.b64')
+          raw = path.read_bytes()
+          text = raw.decode('utf-8', errors='replace')
+          alphabet = set(string.ascii_letters + string.digits + '+/=')
+          invalid = [(i, ch) for i, ch in enumerate(text)
+                     if ch not in alphabet and not ch.isspace()]
+          print('byte length:', len(raw))
+          print('text length:', len(text))
+          print('first 96:', repr(text[:96]))
+          print('last 256:', repr(text[-256:]))
+          print('non-base64 non-whitespace count:', len(invalid))
+          print('first invalid entries:', [(i, repr(ch)) for i, ch in invalid[:40]])
+          for i, ch in invalid[:10]:
+              print('context', i, repr(text[max(0, i-80):i+120]))
+          print('contains truncated:', 'truncated' in text.lower())
+          print('equals positions tail:', [i for i, ch in enumerate(text) if ch == '='][-20:])
+
+          cleaned = ''.join(ch for ch in text if ch in alphabet)
+          print('filtered length:', len(cleaned), 'mod4:', len(cleaned) % 4)
+          for label, candidate in [
+              ('whitespace-only', ''.join(text.split())),
+              ('alphabet-filtered', cleaned),
+          ]:
+              try:
+                  payload = base64.b64decode(candidate, validate=True)
+                  print(label, 'decoded bytes:', len(payload), 'magic:', payload[:8])
+                  try:
+                      out = lzma.decompress(payload)
+                      print(label, 'XZ OK, expanded bytes:', len(out))
+                  except Exception as exc:
+                      print(label, 'XZ rejected:', repr(exc))
+              except Exception as exc:
+                  print(label, 'Base64 rejected:', repr(exc))
+
+          # Try prefixes ending at each padding mark, longest first.
+          positions = [i for i, ch in enumerate(cleaned) if ch == '=']
+          for pos in reversed(positions):
+              end = pos + 1
+              while end < len(cleaned) and cleaned[end] == '=':
+                  end += 1
+              prefix = cleaned[:end]
+              if len(prefix) % 4:
+                  continue
+              try:
+                  payload = base64.b64decode(prefix, validate=True)
+                  out = lzma.decompress(payload)
+              except Exception:
+                  continue
+              print('VALID PREFIX FOUND:', end, 'decoded:', len(payload), 'expanded:', len(out))
+              break
+          else:
+              print('no valid padded prefix found')
+          PY
