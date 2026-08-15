@@ -37,7 +37,7 @@ jobs:
         with:
           lake-package-directory: vn_minimal_project
           build: true
-          build-args: "LogdetLean.VonNeumannTypicality LogdetLean.VonNeumannTypicality.Entropy.VariableDimensionCutoff LogdetLean.VonNeumannTypicality.WeakTypicality.VariableDimension LogdetLean.VonNeumannTypicality.WeakTypicality.ExactReduction LogdetLean.VonNeumannTypicality.Covariance.BlockAlgebra LogdetLean.VonNeumannTypicality.Concentration.ApproximationTransfer LogdetLean.VonNeumannTypicality.AxiomAudit"
+          build-args: "LogdetLean.VonNeumannTypicality LogdetLean.VonNeumannTypicality.Entropy.VariableDimensionCutoff LogdetLean.VonNeumannTypicality.WeakTypicality.VariableDimension LogdetLean.VonNeumannTypicality.WeakTypicality.ExactReduction LogdetLean.VonNeumannTypicality.Covariance.BlockAlgebra LogdetLean.VonNeumannTypicality.Concentration.ApproximationTransfer LogdetLean.VonNeumannTypicality.Concentration.BorelCantelliTransfer LogdetLean.VonNeumannTypicality.AxiomAudit"
           use-mathlib-cache: true
           leanchecker: false
 
