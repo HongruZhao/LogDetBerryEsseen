@@ -46,7 +46,7 @@ jobs:
           build: false
           test: false
           lint: false
-          use-github-cache: true
+          use-github-cache: false
           nanoda: false
 
       - name: Build import-light Curtiss progress audit
