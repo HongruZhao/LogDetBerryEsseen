@@ -1,0 +1,117 @@
+name: Export pinned Lean environment in downloadable parts
+
+on:
+  push:
+    branches:
+      - moving-h-lean-audit-20260815
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export-split-environment:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out audit branch
+        uses: actions/checkout@v4
+        with:
+          ref: moving-h-lean-audit-20260815
+
+      - name: Reconstruct baseline project
+        id: locate
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf portable
+          mkdir portable
+          unzip -q logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip -d portable
+          project="$(find portable -type f -name lean-toolchain -printf '%h\n' | head -n 1)"
+          test -n "$project"
+          echo "project=$project" >> "$GITHUB_OUTPUT"
+
+      - name: Install pinned Lean and Mathlib cache
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: ${{ steps.locate.outputs.project }}
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          nanoda: false
+
+      - name: Archive, free working space, and split
+        shell: bash
+        run: |
+          set -euo pipefail
+          project='${{ steps.locate.outputs.project }}'
+          toolchain="$HOME/.elan/toolchains/leanprover--lean4---v4.33.0-rc2"
+          tar -I 'zstd -8 -T0' -cf lean-toolchain-v4.33.0-rc2.tar.zst \
+            -C "$HOME/.elan/toolchains" leanprover--lean4---v4.33.0-rc2
+          tar -I 'zstd -8 -T0' -cf mathlib-packages-641fbd3.tar.zst \
+            -C "$project/.lake" packages
+          sha256sum lean-toolchain-v4.33.0-rc2.tar.zst \
+            mathlib-packages-641fbd3.tar.zst > PORTABLE_SHA256SUMS.txt
+          rm -rf portable "$HOME/.elan/toolchains/leanprover--lean4---v4.33.0-rc2"
+          split -b 450000000 -d -a 2 lean-toolchain-v4.33.0-rc2.tar.zst toolchain.part
+          split -b 450000000 -d -a 2 mathlib-packages-641fbd3.tar.zst mathlib.part
+          rm lean-toolchain-v4.33.0-rc2.tar.zst mathlib-packages-641fbd3.tar.zst
+          ls -lh toolchain.part* mathlib.part* PORTABLE_SHA256SUMS.txt
+          test "$(find . -maxdepth 1 -name 'toolchain.part*' | wc -l)" -eq 2
+          test "$(find . -maxdepth 1 -name 'mathlib.part*' | wc -l)" -le 6
+
+      - name: Upload toolchain part 00
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-toolchain-part00
+          compression-level: 0
+          path: toolchain.part00
+      - name: Upload toolchain part 01
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-toolchain-part01
+          compression-level: 0
+          path: toolchain.part01
+      - name: Upload mathlib part 00
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-mathlib-part00
+          compression-level: 0
+          path: mathlib.part00
+      - name: Upload mathlib part 01
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-mathlib-part01
+          compression-level: 0
+          path: mathlib.part01
+      - name: Upload mathlib part 02
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-mathlib-part02
+          compression-level: 0
+          path: mathlib.part02
+      - name: Upload mathlib part 03
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-mathlib-part03
+          compression-level: 0
+          path: mathlib.part03
+      - name: Upload mathlib part 04
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-mathlib-part04
+          compression-level: 0
+          path: mathlib.part04
+      - name: Upload mathlib part 05
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-mathlib-part05
+          compression-level: 0
+          path: mathlib.part05
+      - name: Upload checksums
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-portable-checksums
+          compression-level: 0
+          path: PORTABLE_SHA256SUMS.txt
