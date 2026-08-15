@@ -30,7 +30,7 @@ jobs:
             exit 1
           fi
           cat moving-h-ci/minimal.part* | base64 --decode > moving-h-minimal-overlay.tar.xz
-          echo 'd1d7578cfadf989b31cebc6e70d673573988547ee9c001a9def3ba98837bccaa  moving-h-minimal-overlay.tar.xz' | sha256sum --check
+          echo '0bc21734f177e621e498b15dba3a80ef32192b8e8645957fc8f7dadc13ecfc2f  moving-h-minimal-overlay.tar.xz' | sha256sum --check
           tar -xJf moving-h-minimal-overlay.tar.xz -C "$project"
           echo "project=$project" >> "$GITHUB_OUTPUT"
           echo "Lean project: $project"
