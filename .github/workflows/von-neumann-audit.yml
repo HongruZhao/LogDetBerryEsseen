@@ -13,11 +13,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Extract source bundle
+      - name: Reconstruct and inspect source bundle
         shell: bash
         run: |
           set -euo pipefail
-          tar -xzf vn_minimal.tar.gz
+          cat vn_bundle_parts/part_* | base64 --decode > vn_minimal.reconstructed.tar.gz
+          echo 'f2a6bbbcc47164147c52fa9ef78d1dbcfd41c3bdc0a247b2a6e5ea0fa437e6de  vn_minimal.reconstructed.tar.gz' | sha256sum --check
+          tar -xzf vn_minimal.reconstructed.tar.gz
           test -f vn_minimal_project/lean-toolchain
           test -f vn_minimal_project/lake-manifest.json
           test -f vn_minimal_project/LogdetLean/VonNeumannTypicality/AxiomAudit.lean
