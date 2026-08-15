@@ -34,8 +34,15 @@ theorem covarianceCoupling_sq (A C : Matrix n n ℝ) :
     (covarianceCoupling A C) ^ 2 =
       Matrix.fromBlocks (A * A + C * C) (A * C - C * A)
         (C * A - A * C) (A * A + C * C) := by
-  simp [covarianceCoupling, pow_two, Matrix.fromBlocks_multiply]
-  noncomm_ring
+  rw [covarianceCoupling, pow_two, Matrix.fromBlocks_multiply]
+  apply Matrix.fromBlocks_inj.mpr
+  constructor
+  · rfl
+  constructor
+  · noncomm_ring
+  constructor
+  · noncomm_ring
+  · noncomm_ring
 
 /-- Equation (15): the symplectic form anticommutes with the covariance
 coupling block. -/
@@ -43,14 +50,19 @@ theorem manuscriptSymplecticForm_mul_covarianceCoupling
     (A C : Matrix n n ℝ) :
     manuscriptSymplecticForm * covarianceCoupling A C =
       -(covarianceCoupling A C * manuscriptSymplecticForm) := by
-  simp [manuscriptSymplecticForm, covarianceCoupling,
-    Matrix.fromBlocks_multiply]
+  rw [manuscriptSymplecticForm, covarianceCoupling,
+    Matrix.fromBlocks_multiply, Matrix.fromBlocks_multiply,
+    Matrix.fromBlocks_neg]
+  apply Matrix.fromBlocks_inj.mpr
+  simp
 
 /-- The standard symplectic form squares to minus the identity. -/
 theorem manuscriptSymplecticForm_sq :
     manuscriptSymplecticForm * manuscriptSymplecticForm =
       -(1 : Matrix (n ⊕ n) (n ⊕ n) ℝ) := by
-  simp [manuscriptSymplecticForm, Matrix.fromBlocks_multiply]
+  ext i j
+  rcases i with i | i <;> rcases j with j | j <;>
+    simp [manuscriptSymplecticForm, Matrix.fromBlocks_multiply, Matrix.one_apply]
 
 /-- Abstract anticommuting-square identity underlying Equation (17).  It is
 stated for an arbitrary real matrix pair so that the proof does not depend on
@@ -62,8 +74,40 @@ theorem symplectic_covariance_square
     (Ω * (c • (1 : Matrix (n ⊕ n) (n ⊕ n) ℝ) + d • M)) ^ 2 =
       -(c ^ 2) • (1 : Matrix (n ⊕ n) (n ⊕ n) ℝ) +
         d ^ 2 • (M ^ 2) := by
-  simp only [pow_two, mul_add, mul_smul, mul_one]
-  noncomm_ring [hΩsq, hanti]
+  have hanti' : M * Ω = -(Ω * M) := by
+    simpa using (congrArg Neg.neg hanti).symm
+  have hleft : Ω * (Ω * M) = -M := by
+    rw [← mul_assoc, hΩsq]
+    simp
+  have hright : (Ω * M) * Ω = M := by
+    calc
+      (Ω * M) * Ω = Ω * (M * Ω) := mul_assoc _ _ _
+      _ = Ω * (-(Ω * M)) := by rw [hanti']
+      _ = -(Ω * (Ω * M)) := by simp
+      _ = -(-M) := by rw [hleft]
+      _ = M := neg_neg M
+  have hquad : (Ω * M) * (Ω * M) = M * M := by
+    calc
+      (Ω * M) * (Ω * M) = ((Ω * M) * Ω) * M := by
+        rw [mul_assoc]
+      _ = M * M := by rw [hright]
+  have hlinear :
+      Ω * (c • (1 : Matrix (n ⊕ n) (n ⊕ n) ℝ) + d • M) =
+        c • Ω + d • (Ω * M) := by
+    simp [mul_add, mul_smul]
+  rw [hlinear, pow_two]
+  calc
+    (c • Ω + d • (Ω * M)) * (c • Ω + d • (Ω * M)) =
+        (c * c) • (Ω * Ω) + (c * d) • (Ω * (Ω * M)) +
+          ((d * c) • ((Ω * M) * Ω) +
+            (d * d) • ((Ω * M) * (Ω * M))) := by
+      simp only [add_mul, mul_add, smul_mul, mul_smul, smul_smul]
+    _ = -(c ^ 2) • (1 : Matrix (n ⊕ n) (n ⊕ n) ℝ) +
+          d ^ 2 • (M ^ 2) := by
+      rw [hΩsq, hleft, hright, hquad]
+      simp only [smul_neg, pow_two]
+      rw [mul_comm d c]
+      abel
 
 /-- Equation (17) before multiplying by `i`: `(Ωσ)^2=-c^2 I+d^2M^2`. -/
 theorem manuscript_omega_covariance_square
