@@ -98,22 +98,37 @@ theorem symplectic_covariance_square
   have hA2 :
       (c • Ω) * (c • Ω) =
         -(c * c) • (1 : Matrix (n ⊕ n) (n ⊕ n) ℝ) := by
-    rw [smul_mul, mul_smul, hΩsq]
-    simp [smul_smul]
+    calc
+      (c • Ω) * (c • Ω) = (c * c) • (Ω * Ω) := by
+        simp only [smul_mul, mul_smul, smul_smul]
+      _ = -(c * c) • (1 : Matrix (n ⊕ n) (n ⊕ n) ℝ) := by
+        rw [hΩsq]
+        simp
   have hAB :
       (c • Ω) * (d • (Ω * M)) = -(c * d) • M := by
-    rw [smul_mul, mul_smul, hleft]
-    simp [smul_smul]
+    calc
+      (c • Ω) * (d • (Ω * M)) = (c * d) • (Ω * (Ω * M)) := by
+        simp only [smul_mul, mul_smul, smul_smul]
+      _ = -(c * d) • M := by
+        rw [hleft]
+        simp
   have hBA :
       (d • (Ω * M)) * (c • Ω) = (c * d) • M := by
-    rw [smul_mul, mul_smul, hright]
-    simp [smul_smul, mul_comm]
+    calc
+      (d • (Ω * M)) * (c • Ω) = (d * c) • ((Ω * M) * Ω) := by
+        simp only [smul_mul, mul_smul, smul_smul]
+      _ = (c * d) • M := by
+        rw [hright, mul_comm d c]
   have hB2 :
       (d • (Ω * M)) * (d • (Ω * M)) = (d * d) • (M * M) := by
-    rw [smul_mul, mul_smul, hquad]
-    simp [smul_smul]
+    calc
+      (d • (Ω * M)) * (d • (Ω * M)) =
+          (d * d) • ((Ω * M) * (Ω * M)) := by
+        simp only [smul_mul, mul_smul, smul_smul]
+      _ = (d * d) • (M * M) := by rw [hquad]
   rw [hlinear, pow_two, add_mul, mul_add, mul_add]
   rw [hA2, hAB, hBA, hB2]
+  simp only [pow_two, neg_smul, one_smul]
   abel
 
 /-- Equation (17) before multiplying by `i`: `(Ωσ)^2=-c^2 I+d^2M^2`. -/
