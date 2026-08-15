@@ -1,4 +1,4 @@
-import LogdetLean.VonNeumannTypicality.WeakTypicality.Probability
+import LogdetLean.VonNeumannTypicality.WeakTypicality.CutoffProbabilityTransfer
 import LogdetLean.VonNeumannTypicality.Entropy.VariableDimensionCutoff
 
 /-!
