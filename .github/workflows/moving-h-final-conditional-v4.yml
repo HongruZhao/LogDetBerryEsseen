@@ -1,0 +1,199 @@
+name: Moving-H final conditional endpoint v4
+
+on:
+  push:
+    branches:
+      - moving-h-lean-audit-20260815
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Reconstruct source from the two validated overlays
+        id: locate
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf working reconstructed
+          mkdir -p working reconstructed
+          unzip -q logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip -d working
+          project="$(find working -type f -name lean-toolchain -printf '%h\n' | head -n 1)"
+          test -n "$project"
+
+          python3 - <<'PY'
+          import base64
+          import glob
+          import lzma
+          from pathlib import Path
+
+          def decode_chunks(pattern: str, output: str) -> None:
+              paths = sorted(glob.glob(pattern))
+              if not paths:
+                  raise SystemExit(f"no files matched {pattern}")
+              payload = b"".join(
+                  base64.b64decode(
+                      b"".join(Path(path).read_bytes().split()),
+                      validate=True,
+                  )
+                  for path in paths
+              )
+              if not payload.startswith(b"\xfd7zXZ\x00"):
+                  raise SystemExit(f"decoded payload is not XZ: {pattern}")
+              lzma.decompress(payload)
+              Path(output).write_bytes(payload)
+              print(f"decoded {pattern}: {len(payload)} bytes")
+
+          decode_chunks("moving-h-ci/minimal.part*", "reconstructed/minimal.tar.xz")
+          decode_chunks("moving-h-ci/missing2.part*", "reconstructed/missing.tar.xz")
+          PY
+
+          for archive in reconstructed/minimal.tar.xz reconstructed/missing.tar.xz; do
+            xz -t "$archive"
+            tar -xJf "$archive" -C "$project"
+          done
+
+          install -m 0644 moving-h-final/MovingHConditionalEndpoint.lean \
+            "$project/LogdetLean/Coherence/MovingHConditionalEndpoint.lean"
+          install -m 0644 moving-h-final/MovingHConditionalEndpointAxiomAudit.lean \
+            "$project/LogdetLean/Coherence/MovingHConditionalEndpointAxiomAudit.lean"
+          rm -f \
+            "$project/LogdetLean/Coherence/MovingHExternalBoundary.lean" \
+            "$project/LogdetLean/Coherence/MovingHExternalBoundaryAxiomAudit.lean"
+          sed -i \
+            's/^import LogdetLean\.Coherence\.MovingHExternalBoundary$/import LogdetLean.Coherence.MovingHConditionalEndpoint/' \
+            "$project/LogdetLean/Coherence.lean"
+
+          required=(
+            LogdetLean/Coherence/MovingHMDPerturbationDischarge.lean
+            LogdetLean/Coherence/MovingHEasyConsequences.lean
+            LogdetLean/Coherence/MovingHCurtissVoidBridge.lean
+            LogdetLean/Coherence/MovingHConditionalEndpoint.lean
+            LogdetLean/Coherence/MovingHConditionalEndpointAxiomAudit.lean
+          )
+          for file in "${required[@]}"; do
+            if ! test -f "$project/$file"; then
+              echo "MISSING_REQUIRED_SOURCE=$file" >&2
+              find "$project/LogdetLean/Coherence" -maxdepth 1 -type f -name 'MovingH*.lean' \
+                -printf '%f\n' | sort >&2
+              exit 1
+            fi
+          done
+          grep -qx 'import LogdetLean.Coherence.MovingHConditionalEndpoint' \
+            "$project/LogdetLean/Coherence.lean"
+          echo "project=$project" >> "$GITHUB_OUTPUT"
+          echo "PROJECT=$project"
+          printf 'Lean source files: '
+          find "$project" -type f -name '*.lean' | wc -l
+
+      - name: Install exact Lean and Mathlib
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: ${{ steps.locate.outputs.project }}
+          build: false
+          test: false
+          lint: false
+          use-github-cache: true
+          nanoda: false
+
+      - name: Compile and audit the final endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          {
+            echo "UTC start: $(date -u +%FT%TZ)"
+            lean --version
+            lake --version
+            printf 'Mathlib commit: '
+            git -C .lake/packages/mathlib rev-parse HEAD
+            lake build LogdetLean.Coherence.MovingHConditionalEndpointAxiomAudit
+            echo "UTC end: $(date -u +%FT%TZ)"
+          } 2>&1 | tee "$GITHUB_WORKSPACE/moving-h-final-build.log"
+          lake env lean LogdetLean/Coherence/MovingHConditionalEndpointAxiomAudit.lean \
+            2>&1 | tee "$GITHUB_WORKSPACE/moving-h-final-axioms.log"
+
+      - name: Scan active source
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          grep -RInE --include='*.lean' \
+            '^[[:space:]]*(axiom|opaque)[[:space:]]+' \
+            LogdetLean SampleCorrIndLean.lean \
+            > "$GITHUB_WORKSPACE/moving-h-final-project-axioms.log" || true
+          if test -s "$GITHUB_WORKSPACE/moving-h-final-project-axioms.log"; then
+            cat "$GITHUB_WORKSPACE/moving-h-final-project-axioms.log"
+            exit 1
+          fi
+          grep -RInE --include='*.lean' \
+            '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' \
+            LogdetLean SampleCorrIndLean.lean \
+            > "$GITHUB_WORKSPACE/moving-h-final-placeholder-scan.log" || true
+          grep -RIn --include='*.lean' -E \
+            'external_paperHighDimensionalWishartInput|external_paperFiniteMeasureCurtissBridge' \
+            LogdetLean SampleCorrIndLean.lean \
+            > "$GITHUB_WORKSPACE/moving-h-final-legacy-name-scan.log" || true
+          if test -s "$GITHUB_WORKSPACE/moving-h-final-legacy-name-scan.log"; then
+            cat "$GITHUB_WORKSPACE/moving-h-final-legacy-name-scan.log"
+            exit 1
+          fi
+          if grep -E \
+              'external_paperHighDimensionalWishartInput|external_paperFiniteMeasureCurtissBridge' \
+              "$GITHUB_WORKSPACE/moving-h-final-axioms.log"; then
+            exit 1
+          fi
+          printf '%s\n' \
+            PASS \
+            'No active project axiom or opaque declaration.' \
+            'No legacy moving-H external axiom name.' \
+            > "$GITHUB_WORKSPACE/moving-h-final-integrity-summary.log"
+
+      - name: Build Coherence umbrella
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          lake build LogdetLean.Coherence \
+            2>&1 | tee "$GITHUB_WORKSPACE/moving-h-coherence-build.log"
+
+      - name: Package patched source
+        shell: bash
+        run: |
+          set -euo pipefail
+          project='${{ steps.locate.outputs.project }}'
+          tar -I 'zstd -12 -T0' -cf moving-H-axiom-free-conditional-source.tar.zst \
+            --exclude='.lake' --exclude='.git' -C "$project" .
+          sha256sum moving-H-axiom-free-conditional-source.tar.zst \
+            > moving-H-axiom-free-conditional-source.sha256
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-final-v4-evidence
+          path: |
+            moving-h-final-build.log
+            moving-h-final-axioms.log
+            moving-h-final-project-axioms.log
+            moving-h-final-placeholder-scan.log
+            moving-h-final-legacy-name-scan.log
+            moving-h-final-integrity-summary.log
+            moving-h-coherence-build.log
+          if-no-files-found: warn
+
+      - name: Upload patched source
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-final-v4-source
+          compression-level: 0
+          path: |
+            moving-H-axiom-free-conditional-source.tar.zst
+            moving-H-axiom-free-conditional-source.sha256
+          if-no-files-found: error
