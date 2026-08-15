@@ -1,5 +1,5 @@
 import LogdetLean.VonNeumannTypicality.WeakTypicality.TransferAlgebra
-import Mathlib.MeasureTheory.Measure.Basic
+import Mathlib.MeasureTheory.Measure.MeasureSpaceDef
 
 /-!
 # Uniform approximation and concentration-event transfer
