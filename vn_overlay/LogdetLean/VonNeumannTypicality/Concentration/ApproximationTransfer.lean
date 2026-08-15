@@ -1,4 +1,5 @@
 import LogdetLean.VonNeumannTypicality.WeakTypicality.TransferAlgebra
+import Mathlib.MeasureTheory.Measure.Basic
 
 /-!
 # Uniform approximation and concentration-event transfer
@@ -22,8 +23,7 @@ theorem abs_sub_mean_le_abs_sub_approxMean_add_two_mul
     |x - mx| ≤ |y - my| + 2 * R := by
   calc
     |x - mx| = |(x - y) + (y - my) + (my - mx)| := by ring_nf
-    _ ≤ |x - y| + |y - my| + |my - mx| := by
-      exact le_trans (abs_add_three _ _ _) (le_rfl)
+    _ ≤ |x - y| + |y - my| + |my - mx| := abs_add_three _ _ _
     _ ≤ R + |y - my| + R := by
       gcongr
       simpa [abs_sub_comm] using hm
@@ -38,9 +38,10 @@ theorem largeDeviation_subset_regularized_largeDeviation
     {ω | ε * mx ≤ |X ω - mx|} ⊆
       {ω | ε * mx / 2 ≤ |Y ω - my|} := by
   intro ω hω
+  change ε * mx ≤ |X ω - mx| at hω
+  change ε * mx / 2 ≤ |Y ω - my|
   have hcenter := abs_sub_mean_le_abs_sub_approxMean_add_two_mul
     (hpoint ω) hmean
-  dsimp only [Set.mem_setOf_eq] at hω ⊢
   linarith
 
 /-- Probability form of the event transfer. -/
