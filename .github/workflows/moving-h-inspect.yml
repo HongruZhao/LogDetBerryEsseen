@@ -1,0 +1,35 @@
+name: Inspect moving-H public baseline
+
+on:
+  push:
+    branches:
+      - moving-h-lean-audit-20260815
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect archived source modules and declarations
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf inspect
+          mkdir inspect
+          unzip -q logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip -d inspect
+          project="$(find inspect -type f -name lean-toolchain -printf '%h\n' | head -n 1)"
+          echo "PROJECT=$project"
+          echo '=== MOVING-H FILES ==='
+          find "$project/LogdetLean/Coherence" -maxdepth 1 -type f -name 'MovingH*.lean' -printf '%f\n' | sort
+          echo '=== CONTRACT DECLARATIONS ==='
+          grep -RIn --include='*.lean' -E 'MovingHLindebergCLTWitness|PaperMatrixExtremeCDFContract|PaperDampedPasteupContract|movingPaperJointCDFLimit|movingAccompanyingCDF|movingPaperJointCDF|Paper.*Contract' "$project/LogdetLean/Coherence" | sed -n '1,1200p' || true
+          echo '=== IMPORTS OF ENDPOINT-LIKE FILES ==='
+          for f in "$project"/LogdetLean/Coherence/MovingH*Endpoint*.lean "$project"/LogdetLean/Coherence/MovingH*Matrix*.lean "$project"/LogdetLean/Coherence/MovingH*Pasteup*.lean; do
+            [ -f "$f" ] || continue
+            echo "--- $f"
+            sed -n '1,260p' "$f"
+          done
