@@ -1,0 +1,97 @@
+name: Moving-H explicit conditional kernel endpoint
+
+on:
+  push:
+    branches:
+      - moving-h-lean-audit-20260815
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out audit branch
+        uses: actions/checkout@v4
+        with:
+          ref: moving-h-lean-audit-20260815
+
+      - name: Reconstruct public baseline and install endpoint
+        id: locate
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf working && mkdir working
+          unzip -q logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip -d working
+          toolroot="$(find working -type f -name lean-toolchain -printf '%h\n' | head -n 1)"
+          coherence="$(find working -type d -path '*/LogdetLean/Coherence' | head -n 1)"
+          if [ -z "$toolroot" ] || [ -z "$coherence" ]; then
+            echo 'Could not locate the archived Lean project.' >&2
+            exit 1
+          fi
+          cp moving-h-ci/MovingHConditionalKernelEndpoint.lean "$coherence/MovingHConditionalKernelEndpoint.lean"
+          echo "toolroot=$toolroot" >> "$GITHUB_OUTPUT"
+          echo "endpoint=$coherence/MovingHConditionalKernelEndpoint.lean" >> "$GITHUB_OUTPUT"
+          echo "TOOLROOT=$toolroot"
+          echo "ENDPOINT=$coherence/MovingHConditionalKernelEndpoint.lean"
+
+      - name: Install pinned Lean and Mathlib cache
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: ${{ steps.locate.outputs.toolroot }}
+          build: false
+          test: false
+          lint: false
+          use-github-cache: true
+          nanoda: false
+
+      - name: Compile endpoint and print axiom audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.toolroot }}'
+          lake build LogdetLean.Coherence.MovingHConditionalKernelEndpoint 2>&1 | tee "$GITHUB_WORKSPACE/moving-h-kernel-build.log"
+          lake env lean "$GITHUB_WORKSPACE/${{ steps.locate.outputs.endpoint }}" 2>&1 | tee "$GITHUB_WORKSPACE/moving-h-kernel-axioms.log"
+          if grep -E 'external_paperHighDimensionalWishartInput|external_paperFiniteMeasureCurtissBridge' "$GITHUB_WORKSPACE/moving-h-kernel-axioms.log"; then
+            echo 'Removed project axiom reappeared.' >&2
+            exit 1
+          fi
+
+      - name: Materialize passing status
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo 'PASS'
+            echo 'Target: LogdetLean.Coherence.MovingHConditionalKernelEndpoint'
+            echo 'Theorem: paperTheorem_movingAccompanying_from_explicit_cdf_residual'
+            echo 'Toolchain: v4.33.0-rc2'
+            echo 'Removed project axioms: absent from #print axioms output'
+            echo
+            echo '=== BUILD LOG ==='
+            cat moving-h-kernel-build.log
+            echo
+            echo '=== AXIOM AUDIT ==='
+            cat moving-h-kernel-axioms.log
+          } > moving-h-ci/conditional-kernel-status.txt
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add moving-h-ci/conditional-kernel-status.txt
+          if git diff --cached --quiet; then
+            echo 'Status file unchanged.'
+          else
+            git commit -m 'ci: record passing moving-H conditional kernel endpoint'
+            git push origin HEAD:moving-h-lean-audit-20260815
+          fi
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-conditional-kernel-evidence
+          path: |
+            moving-h-kernel-build.log
+            moving-h-kernel-axioms.log
+            moving-h-ci/conditional-kernel-status.txt
+          if-no-files-found: error
