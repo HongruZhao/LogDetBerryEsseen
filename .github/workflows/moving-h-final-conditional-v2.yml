@@ -1,0 +1,122 @@
+name: Moving-H final conditional endpoint v2
+
+on:
+  push:
+    branches:
+      - moving-h-lean-audit-20260815
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  focused:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Reconstruct focused source tree
+        id: locate
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf working && mkdir working
+          unzip -q logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip -d working
+          project="$(find working -type f -name lean-toolchain -printf '%h\n' | head -n 1)"
+          test -n "$project"
+
+          cat moving-h-ci/minimal.part* | base64 --decode --ignore-garbage > minimal.tar.xz
+          xz -t minimal.tar.xz
+          tar -xJf minimal.tar.xz -C "$project"
+
+          cat moving-h-ci/missing2.part* | base64 --decode --ignore-garbage > missing.tar.xz
+          xz -t missing.tar.xz
+          tar -xJf missing.tar.xz -C "$project"
+
+          base64 --decode --ignore-garbage moving-h-progress/missing-closure.tar.xz.b64 \
+            > closure.tar.xz
+          xz -t closure.tar.xz
+          tar -xJf closure.tar.xz -C "$project"
+
+          cp moving-h-final/MovingHConditionalEndpoint.lean \
+            "$project/LogdetLean/Coherence/MovingHConditionalEndpoint.lean"
+          cp moving-h-final/MovingHConditionalEndpointAxiomAudit.lean \
+            "$project/LogdetLean/Coherence/MovingHConditionalEndpointAxiomAudit.lean"
+          rm -f "$project/LogdetLean/Coherence/MovingHExternalBoundary.lean" \
+            "$project/LogdetLean/Coherence/MovingHExternalBoundaryAxiomAudit.lean"
+
+          for f in \
+            LogdetLean/Coherence/MovingHMDPerturbationDischarge.lean \
+            LogdetLean/Coherence/MovingHEasyConsequences.lean \
+            LogdetLean/Coherence/MovingHCurtissVoidBridge.lean \
+            LogdetLean/Coherence/MovingHConditionalEndpoint.lean \
+            LogdetLean/Coherence/MovingHConditionalEndpointAxiomAudit.lean; do
+            test -f "$project/$f" || { echo "missing: $f" >&2; exit 1; }
+          done
+          echo "project=$project" >> "$GITHUB_OUTPUT"
+          echo "PROJECT=$project"
+          find "$project" -type f -name '*.lean' | wc -l
+
+      - name: Install exact Lean and Mathlib
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: ${{ steps.locate.outputs.project }}
+          build: false
+          test: false
+          lint: false
+          use-github-cache: true
+          nanoda: false
+
+      - name: Compile endpoint and print axioms
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          {
+            echo "START $(date -u +%FT%TZ)"
+            lean --version
+            lake --version
+            git -C .lake/packages/mathlib rev-parse HEAD
+            lake build LogdetLean.Coherence.MovingHConditionalEndpointAxiomAudit
+            echo "END $(date -u +%FT%TZ)"
+          } 2>&1 | tee "$GITHUB_WORKSPACE/final-conditional-build.log"
+          lake env lean LogdetLean/Coherence/MovingHConditionalEndpointAxiomAudit.lean \
+            2>&1 | tee "$GITHUB_WORKSPACE/final-conditional-axioms.log"
+
+      - name: Audit declarations and legacy names
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          {
+            echo '# axiom or opaque declarations'
+            grep -RInE --include='*.lean' '^[[:space:]]*(axiom|opaque)[[:space:]]+' \
+              LogdetLean SampleCorrIndLean || true
+          } | tee "$GITHUB_WORKSPACE/final-conditional-declarations.log"
+          test -z "$(grep -RIlE --include='*.lean' '^[[:space:]]*(axiom|opaque)[[:space:]]+' \
+            LogdetLean SampleCorrIndLean || true)"
+          {
+            echo '# removed moving-H external names'
+            grep -RIn --include='*.lean' -E \
+              'external_paperHighDimensionalWishartInput|external_paperFiniteMeasureCurtissBridge' \
+              LogdetLean SampleCorrIndLean || true
+          } | tee "$GITHUB_WORKSPACE/final-conditional-legacy.log"
+          test -z "$(grep -RIl --include='*.lean' -E \
+            'external_paperHighDimensionalWishartInput|external_paperFiniteMeasureCurtissBridge' \
+            LogdetLean SampleCorrIndLean || true)"
+          if grep -E 'external_paperHighDimensionalWishartInput|external_paperFiniteMeasureCurtissBridge' \
+              "$GITHUB_WORKSPACE/final-conditional-axioms.log"; then
+            exit 1
+          fi
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-final-conditional-v2-evidence
+          path: |
+            final-conditional-build.log
+            final-conditional-axioms.log
+            final-conditional-declarations.log
+            final-conditional-legacy.log
+          if-no-files-found: warn
