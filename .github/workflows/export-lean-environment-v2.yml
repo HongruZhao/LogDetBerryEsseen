@@ -1,0 +1,95 @@
+name: Export pinned Lean environment v2
+
+on:
+  push:
+    branches:
+      - moving-h-lean-audit-20260815
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  export-environment:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out audit branch
+        uses: actions/checkout@v4
+        with:
+          ref: moving-h-lean-audit-20260815
+          fetch-depth: 0
+
+      - name: Reconstruct baseline project
+        id: locate
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf portable
+          mkdir portable
+          unzip -q logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip -d portable
+          project="$(find portable -type f -name lean-toolchain -printf '%h\n' | head -n 1)"
+          test -n "$project"
+          echo "project=$project" >> "$GITHUB_OUTPUT"
+          echo "Project: $project"
+
+      - name: Install pinned Lean and Mathlib cache
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: ${{ steps.locate.outputs.project }}
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          nanoda: false
+
+      - name: Create portable archives
+        shell: bash
+        run: |
+          set -euo pipefail
+          project='${{ steps.locate.outputs.project }}'
+          toolchain="$HOME/.elan/toolchains/leanprover--lean4---v4.33.0-rc2"
+          test -d "$toolchain"
+          test -d "$project/.lake/packages"
+          tar -I 'zstd -8 -T0' -cf lean-toolchain-v4.33.0-rc2.tar.zst \
+            -C "$HOME/.elan/toolchains" leanprover--lean4---v4.33.0-rc2
+          tar -I 'zstd -8 -T0' -cf mathlib-packages-641fbd3.tar.zst \
+            -C "$project/.lake" packages
+          sha256sum lean-toolchain-v4.33.0-rc2.tar.zst \
+            mathlib-packages-641fbd3.tar.zst | tee PORTABLE_SHA256SUMS.txt
+          ls -lh lean-toolchain-v4.33.0-rc2.tar.zst mathlib-packages-641fbd3.tar.zst
+
+      - name: Upload portable environment
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-pinned-lean-environment-v2
+          compression-level: 0
+          path: |
+            lean-toolchain-v4.33.0-rc2.tar.zst
+            mathlib-packages-641fbd3.tar.zst
+            PORTABLE_SHA256SUMS.txt
+          if-no-files-found: error
+
+      - name: Record artifact identifier on the audit branch
+        shell: bash
+        env:
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        run: |
+          set -euo pipefail
+          mkdir -p moving-h-progress
+          {
+            echo "artifact_id=$ARTIFACT_ID"
+            echo "artifact_url=$ARTIFACT_URL"
+            echo "artifact_digest=$ARTIFACT_DIGEST"
+            echo "workflow_run_id=$GITHUB_RUN_ID"
+            echo "head_sha=$GITHUB_SHA"
+          } > moving-h-progress/pinned-environment-artifact.txt
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add moving-h-progress/pinned-environment-artifact.txt
+          git commit -m 'ci: record pinned Lean environment artifact [skip ci]'
+          git push origin HEAD:moving-h-lean-audit-20260815
