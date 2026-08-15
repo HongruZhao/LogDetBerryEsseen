@@ -1,5 +1,5 @@
-artifact_id=9248631106
-artifact_url=https://github.com/HongruZhao/logdet_Berry_Essen_lean/actions/runs/31891026014/artifacts/9248631106
-artifact_digest=44488de2b7930779e1fe95e3a2d8eac743f567ef65f13b5454407313fa865585
-workflow_run_id=31891026014
-head_sha=fc4ef29930b679b294bf4af5404e6efd34bb4b9d
+artifact_id=9249340323
+artifact_url=https://github.com/HongruZhao/logdet_Berry_Essen_lean/actions/runs/31893726700/artifacts/9249340323
+artifact_digest=05b2873ddd864be89036b4252716a1912a90a3cf1e6355ebe01048a7fbac3fbd
+workflow_run_id=31893726700
+head_sha=a4334eec6eca82eb0977c8e854b855d3d4b434d5
