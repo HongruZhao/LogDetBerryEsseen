@@ -1,0 +1,26 @@
+name: Von Neumann typicality Lean audit
+
+on:
+  push:
+    branches:
+      - agent/von-neumann-typicality-audit-2026-08-15
+  workflow_dispatch:
+
+jobs:
+  inspect-existing-archive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Inspect existing verification archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p _ci_extract
+          unzip -q logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip -d _ci_extract
+          echo '=== Top-level entries ==='
+          find _ci_extract -maxdepth 3 -type f | sort | head -200
+          echo '=== Von Neumann modules ==='
+          find _ci_extract -type f -path '*VonNeumannTypicality*' | sort || true
+          echo '=== Toolchains ==='
+          find _ci_extract -name lean-toolchain -type f -print -exec cat {} \;
