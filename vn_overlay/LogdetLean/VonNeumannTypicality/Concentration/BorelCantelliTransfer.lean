@@ -1,3 +1,4 @@
+import Mathlib.MeasureTheory.Measure.MeasureSpaceDef
 import Mathlib.MeasureTheory.OuterMeasure.BorelCantelli
 
 /-!
