@@ -1,0 +1,173 @@
+name: Moving-H final axiom-free conditional verification
+
+on:
+  push:
+    branches:
+      - moving-h-lean-audit-20260815
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-final-conditional-endpoint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out audit branch
+        uses: actions/checkout@v4
+
+      - name: Reconstruct the complete moving-H dependency cone
+        id: locate
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf working
+          mkdir working
+          unzip -q logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip -d working
+          project="$(find working -type f -name lean-toolchain -printf '%h\n' | head -n 1)"
+          test -n "$project"
+
+          cat moving-h-ci/minimal.part* | base64 --decode > moving-h-minimal.tar.xz
+          echo '0bc21734f177e621e498b15dba3a80ef32192b8e8645957fc8f7dadc13ecfc2f  moving-h-minimal.tar.xz' | sha256sum --check
+          tar -xJf moving-h-minimal.tar.xz -C "$project"
+
+          cat moving-h-ci/missing2.part* | base64 --decode > moving-h-missing.tar.xz
+          xz -t moving-h-missing.tar.xz
+          tar -xJf moving-h-missing.tar.xz -C "$project"
+
+          base64 --decode moving-h-progress/missing-closure.tar.xz.b64 > moving-h-missing-closure.tar.xz
+          echo '1ad31b5b2e8113a46e4551a32844ab3123fee6c28854a00488d3fe7678238939  moving-h-missing-closure.tar.xz' | sha256sum --check
+          tar -xJf moving-h-missing-closure.tar.xz -C "$project"
+
+          cp moving-h-final/MovingHConditionalEndpoint.lean \
+            "$project/LogdetLean/Coherence/MovingHConditionalEndpoint.lean"
+          cp moving-h-final/MovingHConditionalEndpointAxiomAudit.lean \
+            "$project/LogdetLean/Coherence/MovingHConditionalEndpointAxiomAudit.lean"
+
+          rm -f "$project/LogdetLean/Coherence/MovingHExternalBoundary.lean"
+          rm -f "$project/LogdetLean/Coherence/MovingHExternalBoundaryAxiomAudit.lean"
+          sed -i \
+            's/^import LogdetLean\.Coherence\.MovingHExternalBoundary$/import LogdetLean.Coherence.MovingHConditionalEndpoint/' \
+            "$project/LogdetLean/Coherence.lean"
+
+          test -f "$project/LogdetLean/Coherence/MovingHMDPerturbationDischarge.lean"
+          test -f "$project/LogdetLean/Coherence/MovingHEasyConsequences.lean"
+          test -f "$project/LogdetLean/Coherence/MovingHCurtissVoidBridge.lean"
+          test -f "$project/LogdetLean/Coherence/MovingHConditionalEndpoint.lean"
+          test -f "$project/LogdetLean/Coherence/MovingHConditionalEndpointAxiomAudit.lean"
+          test ! -e "$project/LogdetLean/Coherence/MovingHExternalBoundary.lean"
+          grep -qx 'import LogdetLean.Coherence.MovingHConditionalEndpoint' \
+            "$project/LogdetLean/Coherence.lean"
+
+          echo "project=$project" >> "$GITHUB_OUTPUT"
+          echo "Lean project: $project"
+          find "$project" -type f -name '*.lean' | wc -l
+
+      - name: Install the pinned Lean toolchain and Mathlib cache
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: ${{ steps.locate.outputs.project }}
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          nanoda: false
+
+      - name: Build the axiom-free conditional endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          {
+            echo "UTC start: $(date -u +%FT%TZ)"
+            lean --version
+            lake --version
+            git -C .lake/packages/mathlib rev-parse HEAD
+            lake build LogdetLean/Coherence/MovingHConditionalEndpointAxiomAudit.lean:olean
+            echo "UTC end: $(date -u +%FT%TZ)"
+          } 2>&1 | tee "$GITHUB_WORKSPACE/moving-h-final-build.log"
+
+      - name: Run the permanent kernel axiom audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          lake env lean LogdetLean/Coherence/MovingHConditionalEndpointAxiomAudit.lean \
+            2>&1 | tee "$GITHUB_WORKSPACE/moving-h-final-axioms.log"
+          if grep -E 'external_paperHighDimensionalWishartInput|external_paperFiniteMeasureCurtissBridge' \
+              "$GITHUB_WORKSPACE/moving-h-final-axioms.log"; then
+            echo 'Legacy project axioms appeared in #print axioms output.' >&2
+            exit 1
+          fi
+
+      - name: Run source-integrity scans
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          python3 scripts/scan_lean_integrity.py . 2>&1 | tee "$GITHUB_WORKSPACE/moving-h-final-integrity.log"
+          {
+            echo '# Active project axiom or opaque declarations'
+            grep -RInE --include='*.lean' '^[[:space:]]*(axiom|opaque)[[:space:]]+' \
+              LogdetLean SampleCorrIndLean || true
+          } | tee "$GITHUB_WORKSPACE/moving-h-final-declaration-scan.log"
+          if grep -RInE --include='*.lean' '^[[:space:]]*(axiom|opaque)[[:space:]]+' \
+              LogdetLean SampleCorrIndLean; then
+            echo 'Active project axiom or opaque declaration found.' >&2
+            exit 1
+          fi
+          {
+            echo '# Legacy moving-H external declaration names'
+            grep -RIn --include='*.lean' -E \
+              'external_paperHighDimensionalWishartInput|external_paperFiniteMeasureCurtissBridge' \
+              LogdetLean SampleCorrIndLean || true
+          } | tee "$GITHUB_WORKSPACE/moving-h-final-legacy-name-scan.log"
+          if grep -RIn --include='*.lean' -E \
+              'external_paperHighDimensionalWishartInput|external_paperFiniteMeasureCurtissBridge' \
+              LogdetLean SampleCorrIndLean; then
+            echo 'Legacy moving-H external declaration name remains active.' >&2
+            exit 1
+          fi
+
+      - name: Build the Coherence umbrella import
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          lake build LogdetLean/Coherence.lean:olean \
+            2>&1 | tee "$GITHUB_WORKSPACE/moving-h-coherence-umbrella-build.log"
+
+      - name: Archive the patched source tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          project='${{ steps.locate.outputs.project }}'
+          tar -I 'zstd -12 -T0' -cf moving-H-axiom-free-conditional-source.tar.zst \
+            --exclude='.lake' --exclude='.git' -C "$project" .
+          sha256sum moving-H-axiom-free-conditional-source.tar.zst \
+            > moving-H-axiom-free-conditional-source.sha256
+
+      - name: Upload verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-final-conditional-verification-evidence
+          path: |
+            moving-h-final-build.log
+            moving-h-final-axioms.log
+            moving-h-final-integrity.log
+            moving-h-final-declaration-scan.log
+            moving-h-final-legacy-name-scan.log
+            moving-h-coherence-umbrella-build.log
+          if-no-files-found: warn
+
+      - name: Upload patched source archive
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-axiom-free-conditional-source
+          compression-level: 0
+          path: |
+            moving-H-axiom-free-conditional-source.tar.zst
+            moving-H-axiom-free-conditional-source.sha256
+          if-no-files-found: error
