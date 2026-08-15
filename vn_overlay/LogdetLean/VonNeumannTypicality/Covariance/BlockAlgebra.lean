@@ -5,7 +5,7 @@ import Mathlib.Tactic
 # Block algebra for the reduced Gaussian covariance
 
 This file kernel-checks the finite-dimensional matrix identities behind
-Equations (13)--(17) of the manuscript.  The spectral interpretation of the
+Equations (13)--(17) of the manuscript. The spectral interpretation of the
 resulting square is deliberately kept separate.
 -/
 
@@ -22,7 +22,7 @@ def manuscriptSymplecticForm : Matrix (n ⊕ n) (n ⊕ n) ℝ :=
   Matrix.fromBlocks 0 1 (-1) 0
 
 /-- The real block matrix associated with a complex matrix whose real and
-imaginary parts are `A` and `C`.  This is the matrix `M_U` in Equation (13). -/
+imaginary parts are `A` and `C`. This is the matrix `M_U` in Equation (13). -/
 def covarianceCoupling (A C : Matrix n n ℝ) : Matrix (n ⊕ n) (n ⊕ n) ℝ :=
   Matrix.fromBlocks A C C (-A)
 
@@ -64,7 +64,19 @@ theorem manuscriptSymplecticForm_sq :
   rcases i with i | i <;> rcases j with j | j <;>
     simp [manuscriptSymplecticForm, Matrix.fromBlocks_multiply, Matrix.one_apply]
 
-/-- Abstract anticommuting-square identity underlying Equation (17).  It is
+/-- Multiplying two scalar multiples of matrices factors both scalars. The
+entrywise proof avoids a simplifier loop between `smul_mul` and `mul_smul`. -/
+private theorem smul_mul_smul_matrix
+    (a b : ℝ) (X Y : Matrix (n ⊕ n) (n ⊕ n) ℝ) :
+    (a • X) * (b • Y) = (a * b) • (X * Y) := by
+  ext i j
+  simp only [Matrix.mul_apply, Matrix.smul_apply]
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro x hx
+  ring
+
+/-- Abstract anticommuting-square identity underlying Equation (17). It is
 stated for an arbitrary real matrix pair so that the proof does not depend on
 a spectral theorem. -/
 theorem symplectic_covariance_square
@@ -99,36 +111,34 @@ theorem symplectic_covariance_square
       (c • Ω) * (c • Ω) =
         -(c * c) • (1 : Matrix (n ⊕ n) (n ⊕ n) ℝ) := by
     calc
-      (c • Ω) * (c • Ω) = (c * c) • (Ω * Ω) := by
-        simp only [smul_mul, mul_smul, smul_smul]
-      _ = -(c * c) • (1 : Matrix (n ⊕ n) (n ⊕ n) ℝ) := by
-        rw [hΩsq]
-        simp
+      (c • Ω) * (c • Ω) = (c * c) • (Ω * Ω) :=
+        smul_mul_smul_matrix c c Ω Ω
+      _ = (c * c) • (-(1 : Matrix (n ⊕ n) (n ⊕ n) ℝ)) := by rw [hΩsq]
+      _ = -(c * c) • (1 : Matrix (n ⊕ n) (n ⊕ n) ℝ) := by simp
   have hAB :
       (c • Ω) * (d • (Ω * M)) = -(c * d) • M := by
     calc
-      (c • Ω) * (d • (Ω * M)) = (c * d) • (Ω * (Ω * M)) := by
-        simp only [smul_mul, mul_smul, smul_smul]
-      _ = -(c * d) • M := by
-        rw [hleft]
-        simp
+      (c • Ω) * (d • (Ω * M)) = (c * d) • (Ω * (Ω * M)) :=
+        smul_mul_smul_matrix c d Ω (Ω * M)
+      _ = (c * d) • (-M) := by rw [hleft]
+      _ = -(c * d) • M := by simp
   have hBA :
       (d • (Ω * M)) * (c • Ω) = (c * d) • M := by
     calc
-      (d • (Ω * M)) * (c • Ω) = (d * c) • ((Ω * M) * Ω) := by
-        simp only [smul_mul, mul_smul, smul_smul]
-      _ = (c * d) • M := by
-        rw [hright, mul_comm d c]
+      (d • (Ω * M)) * (c • Ω) = (d * c) • ((Ω * M) * Ω) :=
+        smul_mul_smul_matrix d c (Ω * M) Ω
+      _ = (d * c) • M := by rw [hright]
+      _ = (c * d) • M := by rw [mul_comm d c]
   have hB2 :
       (d • (Ω * M)) * (d • (Ω * M)) = (d * d) • (M * M) := by
     calc
       (d • (Ω * M)) * (d • (Ω * M)) =
-          (d * d) • ((Ω * M) * (Ω * M)) := by
-        simp only [smul_mul, mul_smul, smul_smul]
+          (d * d) • ((Ω * M) * (Ω * M)) :=
+        smul_mul_smul_matrix d d (Ω * M) (Ω * M)
       _ = (d * d) • (M * M) := by rw [hquad]
   rw [hlinear, pow_two, add_mul, mul_add, mul_add]
   rw [hA2, hAB, hBA, hB2]
-  simp only [pow_two, neg_smul, one_smul]
+  simp only [pow_two]
   abel
 
 /-- Equation (17) before multiplying by `i`: `(Ωσ)^2=-c^2 I+d^2M^2`. -/
