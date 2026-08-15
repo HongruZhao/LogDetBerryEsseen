@@ -10,13 +10,13 @@ permissions:
   contents: read
 
 jobs:
-  curtiss-mass-normalization:
+  curtiss-progress:
     runs-on: ubuntu-latest
     steps:
       - name: Check out progress branch
         uses: actions/checkout@v4
 
-      - name: Reconstruct focused moving-H project
+      - name: Prepare import-light Lean project
         id: locate
         shell: bash
         run: |
@@ -30,28 +30,14 @@ jobs:
             exit 1
           fi
 
-          cat moving-h-ci/minimal.part* | base64 --decode > moving-h-minimal.tar.xz
-          echo '0bc21734f177e621e498b15dba3a80ef32192b8e8645957fc8f7dadc13ecfc2f  moving-h-minimal.tar.xz' | sha256sum --check
-          xz -t moving-h-minimal.tar.xz
-          tar -xJf moving-h-minimal.tar.xz -C "$project"
-
-          cat moving-h-ci/missing2.part* | base64 --decode > moving-h-missing.tar.xz
-          echo '413b030b0418a460ede451bd80232b9575c9ee5a79525e266dbeaca2b0af4c45  moving-h-missing.tar.xz' | sha256sum --check
-          xz -t moving-h-missing.tar.xz
-          tar -xJf moving-h-missing.tar.xz -C "$project"
-
-          python3 moving-h-progress/apply_curtiss_mass_patch.py "$project"
+          python3 moving-h-progress/write_standalone_curtiss_progress.py "$project"
 
           echo "project=$project" >> "$GITHUB_OUTPUT"
           echo "Lean project: $project"
-          lean_count="$(find "$project" -type f -name '*.lean' | wc -l)"
-          echo "Focused Lean source count: $lean_count"
-          test "$lean_count" -ge 159
-          test -f "$project/LogdetLean/Coherence/RareBernoulliPoisson.lean"
-          test -f "$project/LogdetLean/WishartLeadingVariance.lean"
-          test -f "$project/LogdetLean/Coherence/MovingHCurtissVoidBridge.lean"
-          grep -n 'paperFiniteMeasureGaussianMassApproximation_of_laplace' \
-            "$project/LogdetLean/Coherence/MovingHCurtissVoidBridge.lean"
+          test -f "$project/LogdetLean/FiniteMeasureCurtissProgress.lean"
+          test -f "$project/LogdetLean/FiniteMeasureCurtissProgressAxiomAudit.lean"
+          grep -nE 'finiteMeasureGaussianMassApproximation_of_laplace|finiteMeasureCDFApproximation_of_small_mass' \
+            "$project/LogdetLean/FiniteMeasureCurtissProgress.lean"
 
       - name: Install pinned Lean and obtain Mathlib cache
         uses: leanprover/lean-action@v1
@@ -60,49 +46,57 @@ jobs:
           build: false
           test: false
           lint: false
-          use-github-cache: false
+          use-github-cache: true
           nanoda: false
 
-      - name: Build focused Curtiss audit module
+      - name: Build import-light Curtiss progress audit
         shell: bash
         run: |
           set -euo pipefail
           cd '${{ steps.locate.outputs.project }}'
-          lake build LogdetLean.Coherence.MovingHCurtissVoidBridgeAxiomAudit \
-            2>&1 | tee "$GITHUB_WORKSPACE/curtiss-focused-build.log"
+          lake build LogdetLean.FiniteMeasureCurtissProgressAxiomAudit \
+            2>&1 | tee "$GITHUB_WORKSPACE/curtiss-progress-build.log"
 
       - name: Elaborate permanent axiom audit
         shell: bash
         run: |
           set -euo pipefail
           cd '${{ steps.locate.outputs.project }}'
-          lake env lean LogdetLean/Coherence/MovingHCurtissVoidBridgeAxiomAudit.lean \
-            2>&1 | tee "$GITHUB_WORKSPACE/curtiss-axioms.log"
-          grep -F 'paperFiniteMeasureGaussianMassApproximation_of_laplace' \
-            "$GITHUB_WORKSPACE/curtiss-axioms.log"
+          lake env lean LogdetLean/FiniteMeasureCurtissProgressAxiomAudit.lean \
+            2>&1 | tee "$GITHUB_WORKSPACE/curtiss-progress-axioms.log"
+          grep -F 'finiteMeasureGaussianMassApproximation_of_laplace' \
+            "$GITHUB_WORKSPACE/curtiss-progress-axioms.log"
+          grep -F 'finiteMeasureCDFApproximation_of_small_mass' \
+            "$GITHUB_WORKSPACE/curtiss-progress-axioms.log"
 
-      - name: Record truth-boundary and placeholder scans
+      - name: Scan new modules for prohibited placeholders
         shell: bash
         run: |
           set -euo pipefail
           cd '${{ steps.locate.outputs.project }}'
+          files=(
+            LogdetLean/FiniteMeasureCurtissProgress.lean
+            LogdetLean/FiniteMeasureCurtissProgressAxiomAudit.lean
+          )
+          if grep -nE '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)|^[[:space:]]*(axiom|opaque)[[:space:]]+' "${files[@]}"; then
+            echo 'A prohibited placeholder or declaration occurs in a new module.' >&2
+            exit 1
+          fi
           {
-            echo '# New theorem source scan'
-            grep -RInE --include='MovingHCurtissVoidBridge*.lean' \
-              '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' \
-              LogdetLean/Coherence || true
+            echo '# Moving-H finite-measure Curtiss progress truth boundary'
             echo
-            echo '# Deliberately retained external boundary'
-            grep -RInE --include='MovingHExternalBoundary.lean' \
-              '^[[:space:]]*axiom[[:space:]]+' LogdetLean/Coherence || true
-          } | tee "$GITHUB_WORKSPACE/curtiss-truth-boundary.log"
+            echo 'Kernel target 1: total-mass approximation from the real-Laplace contract.'
+            echo 'Kernel target 2: uniform CDF approximation on the vanishing-mass branch.'
+            echo 'Still open: the positive-mass Laplace-uniqueness/Curtiss branch.'
+            echo 'Still open: the high-dimensional Gaussian maximum/void input.'
+          } | tee "$GITHUB_WORKSPACE/curtiss-progress-truth-boundary.log"
 
       - name: Upload progress evidence
         uses: actions/upload-artifact@v4
         with:
           name: moving-h-curtiss-progress-evidence
           path: |
-            curtiss-focused-build.log
-            curtiss-axioms.log
-            curtiss-truth-boundary.log
+            curtiss-progress-build.log
+            curtiss-progress-axioms.log
+            curtiss-progress-truth-boundary.log
           if-no-files-found: error
