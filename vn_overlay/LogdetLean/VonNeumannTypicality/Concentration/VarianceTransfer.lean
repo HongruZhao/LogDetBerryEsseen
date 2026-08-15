@@ -28,7 +28,8 @@ theorem variance_le_two_variance_add_two_sq_of_uniform_approximation
     (hXY : ∀ᵐ ω ∂μ, |X ω - Y ω| ≤ R) :
     Var[X; μ] ≤ 2 * Var[Y; μ] + 2 * R ^ 2 := by
   have hD : MemLp (fun ω ↦ X ω - Y ω) 2 μ := by
-    simpa only [Pi.sub_apply] using hX.sub hY
+    change MemLp (X - Y) 2 μ
+    exact hX.sub hY
   have hC : MemLp (fun ω ↦ Y ω - μ[Y]) 2 μ :=
     hY.sub (memLp_const μ[Y])
   have hZ : MemLp (fun ω ↦ X ω - μ[Y]) 2 μ :=
@@ -51,6 +52,12 @@ theorem variance_le_two_variance_add_two_sq_of_uniform_approximation
           ≤ ∫ _ω, R ^ 2 ∂μ :=
         integral_mono_ae hD.integrable_sq (integrable_const (R ^ 2)) hdiffsq
       _ = R ^ 2 := by simp
+  have hIntAdd :
+      (∫ ω,
+          (2 * (X ω - Y ω) ^ 2 + 2 * (Y ω - μ[Y]) ^ 2) ∂μ) =
+        (∫ ω, 2 * (X ω - Y ω) ^ 2 ∂μ) +
+          ∫ ω, 2 * (Y ω - μ[Y]) ^ 2 ∂μ :=
+    integral_add (hD.integrable_sq.const_mul 2) (hC.integrable_sq.const_mul 2)
   calc
     Var[X; μ] = Var[fun ω ↦ X ω - μ[Y]; μ] := by
       symm
@@ -63,10 +70,7 @@ theorem variance_le_two_variance_add_two_sq_of_uniform_approximation
         ((hD.integrable_sq.const_mul 2).add (hC.integrable_sq.const_mul 2)) hpoint
     _ = 2 * (∫ ω, (X ω - Y ω) ^ 2 ∂μ) +
         2 * (∫ ω, (Y ω - μ[Y]) ^ 2 ∂μ) := by
-      rw [integral_add, integral_const_mul, integral_const_mul]
-      · rfl
-      · exact hD.integrable_sq.const_mul 2
-      · exact hC.integrable_sq.const_mul 2
+      rw [hIntAdd, integral_const_mul, integral_const_mul]
     _ ≤ 2 * R ^ 2 + 2 * Var[Y; μ] := by
       rw [variance_eq_integral hY.aemeasurable]
       gcongr
