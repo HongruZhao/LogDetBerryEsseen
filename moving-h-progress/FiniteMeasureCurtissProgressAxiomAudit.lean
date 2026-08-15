@@ -1,0 +1,4 @@
+import LogdetLean.FiniteMeasureCurtissProgress
+
+#print axioms LogdetLean.finiteMeasureGaussianMassApproximation_of_laplace
+#print axioms LogdetLean.finiteMeasureCDFApproximation_of_small_mass
