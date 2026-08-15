@@ -11,7 +11,7 @@ inequality:
 * `PaperDirectGaussianVoidDecoupling` (V2).
 
 Both are ordinary theorem hypotheses. This module declares no project axiom,
-opaque certificate, or hidden typeclass assumption. The stronger assertion
+an opaque certificate, or hidden typeclass assumption. The stronger assertion
 that M1--M4 alone imply V1 and V2 remains a conventional mathematical result,
 not an end-to-end Lean theorem in this release.
 -/
