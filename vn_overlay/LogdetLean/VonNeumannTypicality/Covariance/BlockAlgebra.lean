@@ -70,11 +70,15 @@ private theorem smul_mul_smul_matrix
     (a b : ℝ) (X Y : Matrix (n ⊕ n) (n ⊕ n) ℝ) :
     (a • X) * (b • Y) = (a * b) • (X * Y) := by
   ext i j
-  simp only [Matrix.mul_apply, Matrix.smul_apply]
-  rw [Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro x hx
-  ring
+  simp only [Matrix.mul_apply, Matrix.smul_apply, smul_eq_mul]
+  calc
+    (∑ x, (a * X i x) * (b * Y x j)) =
+        ∑ x, (a * b) * (X i x * Y x j) := by
+      apply Finset.sum_congr rfl
+      intro x hx
+      ring
+    _ = (a * b) * ∑ x, X i x * Y x j := by
+      rw [Finset.mul_sum]
 
 /-- Abstract anticommuting-square identity underlying Equation (17). It is
 stated for an arbitrary real matrix pair so that the proof does not depend on
@@ -106,7 +110,7 @@ theorem symplectic_covariance_square
   have hlinear :
       Ω * (c • (1 : Matrix (n ⊕ n) (n ⊕ n) ℝ) + d • M) =
         c • Ω + d • (Ω * M) := by
-    simp [mul_add, mul_smul]
+    simp [mul_add]
   have hA2 :
       (c • Ω) * (c • Ω) =
         -(c * c) • (1 : Matrix (n ⊕ n) (n ⊕ n) ℝ) := by
@@ -139,7 +143,7 @@ theorem symplectic_covariance_square
   rw [hlinear, pow_two, add_mul, mul_add, mul_add]
   rw [hA2, hAB, hBA, hB2]
   simp only [pow_two]
-  abel
+  abel_nf
 
 /-- Equation (17) before multiplying by `i`: `(Ωσ)^2=-c^2 I+d^2M^2`. -/
 theorem manuscript_omega_covariance_square
