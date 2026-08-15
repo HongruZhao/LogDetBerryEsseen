@@ -39,6 +39,11 @@ jobs:
           xz -t moving-h-missing.tar.xz
           tar -xJf moving-h-missing.tar.xz -C "$project"
 
+          base64 --decode moving-h-progress/missing-closure.tar.xz.b64 > moving-h-missing-closure.tar.xz
+          echo '1ad31b5b2e8113a46e4551a32844ab3123fee6c28854a00488d3fe7678238939  moving-h-missing-closure.tar.xz' | sha256sum --check
+          xz -t moving-h-missing-closure.tar.xz
+          tar -xJf moving-h-missing-closure.tar.xz -C "$project"
+
           cp moving-h-progress/FiniteMeasureCurtissProgress.lean \
             "$project/LogdetLean/FiniteMeasureCurtissProgress.lean"
           cp moving-h-progress/FiniteMeasureCurtissProgressAxiomAudit.lean \
@@ -54,6 +59,8 @@ jobs:
           echo "Lean source files in focused reconstruction: $lean_count"
           test -f "$project/LogdetLean/Coherence/RareBernoulliPoisson.lean"
           test -f "$project/LogdetLean/WishartLeadingVariance.lean"
+          test -f "$project/LogdetLean/Coherence/GammaChernoff.lean"
+          test -f "$project/LogdetLean/Coherence/NoncentralPearsonFiniteMD.lean"
           test -f "$project/LogdetLean/Coherence/MovingHExternalBoundary.lean"
           test -f "$project/LogdetLean/Coherence/MovingHExternalBoundaryAxiomAudit.lean"
           test -f "$project/LogdetLean/FiniteMeasureCurtissProgressAxiomAudit.lean"
