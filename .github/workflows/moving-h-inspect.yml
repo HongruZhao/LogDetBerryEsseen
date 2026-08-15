@@ -21,15 +21,24 @@ jobs:
           rm -rf inspect
           mkdir inspect
           unzip -q logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip -d inspect
-          project="$(find inspect -type f -name lean-toolchain -printf '%h\n' | head -n 1)"
+          toolroot="$(find inspect -type f -name lean-toolchain -printf '%h\n' | head -n 1)"
+          coherence="$(find inspect -type d -path '*/LogdetLean/Coherence' | head -n 1)"
+          if [ -z "$coherence" ]; then
+            echo 'No LogdetLean/Coherence directory found.' >&2
+            find inspect -maxdepth 5 -type d | sort | sed -n '1,500p'
+            exit 1
+          fi
+          project="${coherence%/LogdetLean/Coherence}"
+          echo "TOOLROOT=$toolroot"
           echo "PROJECT=$project"
+          echo "COHERENCE=$coherence"
           echo '=== MOVING-H FILES ==='
-          find "$project/LogdetLean/Coherence" -maxdepth 1 -type f -name 'MovingH*.lean' -printf '%f\n' | sort
+          find "$coherence" -maxdepth 1 -type f -name 'MovingH*.lean' -printf '%f\n' | sort
           echo '=== CONTRACT DECLARATIONS ==='
-          grep -RIn --include='*.lean' -E 'MovingHLindebergCLTWitness|PaperMatrixExtremeCDFContract|PaperDampedPasteupContract|movingPaperJointCDFLimit|movingAccompanyingCDF|movingPaperJointCDF|Paper.*Contract' "$project/LogdetLean/Coherence" | sed -n '1,1200p' || true
-          echo '=== IMPORTS OF ENDPOINT-LIKE FILES ==='
-          for f in "$project"/LogdetLean/Coherence/MovingH*Endpoint*.lean "$project"/LogdetLean/Coherence/MovingH*Matrix*.lean "$project"/LogdetLean/Coherence/MovingH*Pasteup*.lean; do
-            [ -f "$f" ] || continue
+          grep -RIn --include='*.lean' -E 'MovingHLindebergCLTWitness|PaperMatrixExtremeCDFContract|PaperDampedPasteupContract|movingPaperJointCDFLimit|movingAccompanyingCDF|movingPaperJointCDF|Paper.*Contract' "$coherence" | sed -n '1,1600p' || true
+          echo '=== ENDPOINT-LIKE FILE CONTENTS ==='
+          shopt -s nullglob
+          for f in "$coherence"/MovingH*Endpoint*.lean "$coherence"/MovingH*Matrix*.lean "$coherence"/MovingH*Pasteup*.lean; do
             echo "--- $f"
-            sed -n '1,260p' "$f"
+            sed -n '1,360p' "$f"
           done
