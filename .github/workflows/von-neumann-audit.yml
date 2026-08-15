@@ -7,20 +7,32 @@ on:
   workflow_dispatch:
 
 jobs:
-  inspect-existing-archive:
+  build-minimal-project:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-      - name: Inspect existing verification archive
+
+      - name: Extract source bundle
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p _ci_extract
-          unzip -q logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip -d _ci_extract
-          echo '=== Top-level entries ==='
-          find _ci_extract -maxdepth 3 -type f | sort | head -200
-          echo '=== Von Neumann modules ==='
-          find _ci_extract -type f -path '*VonNeumannTypicality*' | sort || true
-          echo '=== Toolchains ==='
-          find _ci_extract -name lean-toolchain -type f -print -exec cat {} \;
+          tar -xzf vn_minimal.tar.gz
+          test -f vn_minimal_project/lean-toolchain
+          test -f vn_minimal_project/lake-manifest.json
+          test -f vn_minimal_project/LogdetLean/VonNeumannTypicality/AxiomAudit.lean
+          if grep -RInE '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' \
+              vn_minimal_project/LogdetLean/VonNeumannTypicality \
+              vn_minimal_project/LogdetLean/VonNeumannTypicality.lean; then
+            echo 'Found a proof placeholder in the paper-specific source.' >&2
+            exit 1
+          fi
+
+      - name: Build and kernel-check paper-specific modules
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: vn_minimal_project
+          build: true
+          build-args: "LogdetLean.VonNeumannTypicality LogdetLean.VonNeumannTypicality.AxiomAudit"
+          use-mathlib-cache: true
+          leanchecker: true
