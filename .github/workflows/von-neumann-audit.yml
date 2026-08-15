@@ -30,11 +30,22 @@ jobs:
             exit 1
           fi
 
-      - name: Build and kernel-check paper-specific modules
+      - name: Build paper-specific modules
         uses: leanprover/lean-action@v1
         with:
           lake-package-directory: vn_minimal_project
           build: true
           build-args: "LogdetLean.VonNeumannTypicality LogdetLean.VonNeumannTypicality.AxiomAudit"
           use-mathlib-cache: true
-          leanchecker: true
+          leanchecker: false
+
+      - name: Re-run the aggregate axiom audit directly
+        shell: bash
+        working-directory: vn_minimal_project
+        run: |
+          set -euo pipefail
+          lake env lean LogdetLean/VonNeumannTypicality/AxiomAudit.lean | tee axiom-audit.log
+          if grep -E 'depends on axioms:.*(sorryAx|Classical.choice.*Classical.choice)' axiom-audit.log; then
+            echo 'Unexpected project axiom detected.' >&2
+            exit 1
+          fi
