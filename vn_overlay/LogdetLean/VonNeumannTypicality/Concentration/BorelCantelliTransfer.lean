@@ -16,19 +16,30 @@ namespace LogdetLean.VonNeumannTypicality
 
 noncomputable section
 
-/-- If the upper-deviation events have summable probabilities, then almost
-every sample eventually avoids them. -/
+/-- General threshold-sequence form of the first Borel--Cantelli transfer. -/
+theorem ae_eventually_abs_sub_lt_threshold_of_tsum_measure_ne_top
+    {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
+    (X : ℕ → Ω → ℝ) (center threshold : ℕ → ℝ)
+    (hsum : (∑' N,
+      μ {ω | threshold N ≤ |X N ω - center N|}) ≠ ∞) :
+    ∀ᵐ ω ∂μ, ∀ᶠ N in atTop,
+      |X N ω - center N| < threshold N := by
+  have hAE := MeasureTheory.ae_eventually_notMem
+    (μ := μ)
+    (s := fun N ↦ {ω | threshold N ≤ |X N ω - center N|}) hsum
+  filter_upwards [hAE] with ω hω
+  filter_upwards [hω] with N hN
+  change ¬ threshold N ≤ |X N ω - center N| at hN
+  exact lt_of_not_ge hN
+
+/-- Fixed-threshold form. -/
 theorem ae_eventually_abs_sub_lt_of_tsum_measure_ne_top
     {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
     (X : ℕ → Ω → ℝ) (center : ℕ → ℝ) (ε : ℝ)
     (hsum : (∑' N, μ {ω | ε ≤ |X N ω - center N|}) ≠ ∞) :
-    ∀ᵐ ω ∂μ, ∀ᶠ N in atTop, |X N ω - center N| < ε := by
-  have hAE := MeasureTheory.ae_eventually_notMem
-    (μ := μ) (s := fun N ↦ {ω | ε ≤ |X N ω - center N|}) hsum
-  filter_upwards [hAE] with ω hω
-  filter_upwards [hω] with N hN
-  change ¬ ε ≤ |X N ω - center N| at hN
-  exact lt_of_not_ge hN
+    ∀ᵐ ω ∂μ, ∀ᶠ N in atTop, |X N ω - center N| < ε :=
+  ae_eventually_abs_sub_lt_threshold_of_tsum_measure_ne_top
+    μ X center (fun _ ↦ ε) hsum
 
 /-- Relative-error form used for weak typicality and its almost-sure
 strengthening. -/
@@ -52,8 +63,8 @@ theorem ae_eventually_abs_centered_lt_mul_rpow_of_tsum_measure_ne_top
       μ {ω | ε * (N : ℝ) ^ a ≤ |X N ω - center N|}) ≠ ∞) :
     ∀ᵐ ω ∂μ, ∀ᶠ N in atTop,
       |X N ω - center N| < ε * (N : ℝ) ^ a :=
-  ae_eventually_abs_sub_lt_of_tsum_measure_ne_top μ X center ε
-    (by simpa only using hsum)
+  ae_eventually_abs_sub_lt_threshold_of_tsum_measure_ne_top μ X center
+    (fun N ↦ ε * (N : ℝ) ^ a) hsum
 
 end
 
