@@ -1,0 +1,198 @@
+name: Moving-H final conditional kernel verification
+
+on:
+  push:
+    branches:
+      - moving-h-final-conditional-20260815
+    paths:
+      - '.github/workflows/moving-h-final-conditional.yml'
+      - 'moving-h-final/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out verification branch
+        uses: actions/checkout@v4
+
+      - name: Reconstruct uploaded Lean project
+        id: locate
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf working
+          mkdir working
+          unzip -q logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip -d working
+          project="$(find working -type f -name lean-toolchain -printf '%h\n' | head -n 1)"
+          if [ -z "$project" ]; then
+            echo 'No Lean project was found in the archived release.' >&2
+            exit 1
+          fi
+
+          cat moving-h-ci/minimal.part* | base64 --decode > moving-h-minimal.tar.xz
+          echo '0bc21734f177e621e498b15dba3a80ef32192b8e8645957fc8f7dadc13ecfc2f  moving-h-minimal.tar.xz' | sha256sum --check
+          xz -t moving-h-minimal.tar.xz
+          tar -xJf moving-h-minimal.tar.xz -C "$project"
+
+          cat moving-h-ci/missing2.part* | base64 --decode > moving-h-missing.tar.xz
+          xz -t moving-h-missing.tar.xz
+          tar -xJf moving-h-missing.tar.xz -C "$project"
+
+          base64 --decode moving-h-progress/missing-closure.tar.xz.b64 > moving-h-missing-closure.tar.xz
+          echo '1ad31b5b2e8113a46e4551a32844ab3123fee6c28854a00488d3fe7678238939  moving-h-missing-closure.tar.xz' | sha256sum --check
+          xz -t moving-h-missing-closure.tar.xz
+          tar -xJf moving-h-missing-closure.tar.xz -C "$project"
+
+          cp moving-h-final/MovingHConditionalKernelEndpoint.lean \
+            "$project/LogdetLean/Coherence/MovingHConditionalKernelEndpoint.lean"
+          cp moving-h-final/MovingHConditionalKernelEndpointAxiomAudit.lean \
+            "$project/LogdetLean/Coherence/MovingHConditionalKernelEndpointAxiomAudit.lean"
+
+          # Remove the former project-axiom boundary.  The final theorem imports
+          # MovingHDirectCDFPath directly and does not depend on this module.
+          rm -f "$project/LogdetLean/Coherence/MovingHExternalBoundary.lean"
+          rm -f "$project/LogdetLean/Coherence/MovingHExternalBoundaryAxiomAudit.lean"
+
+          test -f "$project/LogdetLean/Coherence/MovingHDirectCDFPath.lean"
+          test -f "$project/LogdetLean/Coherence/MovingHConditionalKernelEndpoint.lean"
+          test -f "$project/LogdetLean/Coherence/MovingHConditionalKernelEndpointAxiomAudit.lean"
+          echo "project=$project" >> "$GITHUB_OUTPUT"
+          echo "Lean project: $project"
+          echo "Lean source files: $(find "$project" -type f -name '*.lean' | wc -l)"
+
+      - name: Install pinned Lean and obtain Mathlib cache
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: ${{ steps.locate.outputs.project }}
+          build: false
+          test: false
+          lint: false
+          use-github-cache: false
+          nanoda: false
+
+      - name: Build conditional endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          {
+            echo "UTC_START=$(date -u +%FT%TZ)"
+            lean --version
+            lake --version
+            echo "MATHLIB_COMMIT=$(git -C .lake/packages/mathlib rev-parse HEAD)"
+            lake build +LogdetLean.Coherence.MovingHConditionalKernelEndpointAxiomAudit:olean
+            echo "UTC_END=$(date -u +%FT%TZ)"
+            echo 'EXIT_STATUS=0'
+          } 2>&1 | tee "$GITHUB_WORKSPACE/moving-h-final-build.log"
+
+      - name: Print kernel axiom footprint
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          lake env lean LogdetLean/Coherence/MovingHConditionalKernelEndpointAxiomAudit.lean \
+            2>&1 | tee "$GITHUB_WORKSPACE/moving-h-final-axioms.log"
+          if grep -Eq 'external_paperHighDimensionalWishartInput|external_paperFiniteMeasureCurtissBridge' \
+              "$GITHUB_WORKSPACE/moving-h-final-axioms.log"; then
+            echo 'Legacy project axiom detected in kernel footprint.' >&2
+            exit 1
+          fi
+
+      - name: Run source-integrity audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          python3 - <<'PY' | tee "$GITHUB_WORKSPACE/moving-h-final-integrity.log"
+          from pathlib import Path
+          import re
+
+          root = Path('.')
+          files = sorted(root.rglob('*.lean'))
+          axiom = re.compile(r'^\s*(axiom|opaque)\s+', re.MULTILINE)
+          placeholder = re.compile(r'(^|[^A-Za-z0-9_])(sorry|admit)([^A-Za-z0-9_]|$)')
+          axiom_files = []
+          placeholder_files = []
+          legacy_files = []
+          for path in files:
+              if '.lake' in path.parts:
+                  continue
+              text = path.read_text(encoding='utf-8')
+              if axiom.search(text):
+                  axiom_files.append(str(path))
+              code = '\n'.join(line.split('--', 1)[0] for line in text.splitlines())
+              if placeholder.search(code):
+                  placeholder_files.append(str(path))
+              if ('external_paperHighDimensionalWishartInput' in text or
+                  'external_paperFiniteMeasureCurtissBridge' in text):
+                  legacy_files.append(str(path))
+          print(f'LEAN_SOURCE_FILES={len(files)}')
+          print(f'PROJECT_AXIOM_OR_OPAQUE_FILES={len(axiom_files)}')
+          for path in axiom_files:
+              print(f'  {path}')
+          print(f'SORRY_OR_ADMIT_FILES={len(placeholder_files)}')
+          for path in placeholder_files:
+              print(f'  {path}')
+          print(f'LEGACY_EXTERNAL_AXIOM_REFERENCE_FILES={len(legacy_files)}')
+          for path in legacy_files:
+              print(f'  {path}')
+          if axiom_files or placeholder_files or legacy_files:
+              raise SystemExit(1)
+          PY
+
+      - name: Record theorem signature
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          cat > /tmp/MovingHFinalCheck.lean <<'EOF'
+          import LogdetLean.Coherence.MovingHConditionalKernelEndpoint
+          #check LogdetLean.Coherence.paperTheorem_movingAccompanying_from_M1_M4_D1_D2
+          #print LogdetLean.Coherence.paperTheorem_movingAccompanying_from_M1_M4_D1_D2
+          EOF
+          lake env lean /tmp/MovingHFinalCheck.lean \
+            2>&1 | tee "$GITHUB_WORKSPACE/moving-h-final-signature.log"
+
+      - name: Publish verification evidence to branch
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p moving-h-final/evidence
+          cp "$GITHUB_WORKSPACE/moving-h-final-build.log" moving-h-final/evidence/
+          cp "$GITHUB_WORKSPACE/moving-h-final-axioms.log" moving-h-final/evidence/
+          cp "$GITHUB_WORKSPACE/moving-h-final-integrity.log" moving-h-final/evidence/
+          cp "$GITHUB_WORKSPACE/moving-h-final-signature.log" moving-h-final/evidence/
+          cat > moving-h-final/evidence/VERIFIED_STATUS.txt <<EOF
+          VERIFIED=true
+          VERIFIED_THEOREM=LogdetLean.Coherence.paperTheorem_movingAccompanying_from_M1_M4_D1_D2
+          LEAN_TOOLCHAIN=leanprover/lean4:v4.33.0-rc2
+          MATHLIB_COMMIT=641fbd329d4ffb62bef83c51f54088469056bd36
+          PROJECT_SPECIFIC_AXIOMS=0
+          SORRY_OR_ADMIT=0
+          LEGACY_EXTERNAL_AXIOM_REFERENCES=0
+          GITHUB_RUN_ID=${GITHUB_RUN_ID}
+          GITHUB_SHA=${GITHUB_SHA}
+          UTC=$(date -u +%FT%TZ)
+          EOF
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add moving-h-final/evidence
+          git commit -m 'ci: record moving-H conditional verification [skip ci]'
+          git push
+
+      - name: Upload evidence artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: moving-h-final-conditional-verification
+          path: |
+            moving-h-final-build.log
+            moving-h-final-axioms.log
+            moving-h-final-integrity.log
+            moving-h-final-signature.log
+          if-no-files-found: warn
