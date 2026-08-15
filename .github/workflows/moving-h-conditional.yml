@@ -43,6 +43,10 @@ jobs:
             "$project/LogdetLean/FiniteMeasureCurtissProgress.lean"
           cp moving-h-progress/FiniteMeasureCurtissProgressAxiomAudit.lean \
             "$project/LogdetLean/FiniteMeasureCurtissProgressAxiomAudit.lean"
+          cp moving-h-progress/MovingHCurtissPositiveMass.lean \
+            "$project/LogdetLean/Coherence/MovingHCurtissPositiveMass.lean"
+          cp moving-h-progress/MovingHCurtissPositiveMassAxiomAudit.lean \
+            "$project/LogdetLean/Coherence/MovingHCurtissPositiveMassAxiomAudit.lean"
 
           echo "project=$project" >> "$GITHUB_OUTPUT"
           echo "Lean project: $project"
@@ -53,6 +57,7 @@ jobs:
           test -f "$project/LogdetLean/Coherence/MovingHExternalBoundary.lean"
           test -f "$project/LogdetLean/Coherence/MovingHExternalBoundaryAxiomAudit.lean"
           test -f "$project/LogdetLean/FiniteMeasureCurtissProgressAxiomAudit.lean"
+          test -f "$project/LogdetLean/Coherence/MovingHCurtissPositiveMassAxiomAudit.lean"
 
       - name: Install pinned Lean and obtain Mathlib cache
         uses: leanprover/lean-action@v1
@@ -71,6 +76,14 @@ jobs:
           cd '${{ steps.locate.outputs.project }}'
           lake build LogdetLean.FiniteMeasureCurtissProgressAxiomAudit 2>&1 | tee "$GITHUB_WORKSPACE/curtiss-progress-build.log"
           lake env lean LogdetLean/FiniteMeasureCurtissProgressAxiomAudit.lean 2>&1 | tee "$GITHUB_WORKSPACE/curtiss-progress-axioms.log"
+
+      - name: Build the moving-H positive-mass audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd '${{ steps.locate.outputs.project }}'
+          lake build LogdetLean.Coherence.MovingHCurtissPositiveMassAxiomAudit 2>&1 | tee "$GITHUB_WORKSPACE/moving-h-positive-mass-build.log"
+          lake env lean LogdetLean/Coherence/MovingHCurtissPositiveMassAxiomAudit.lean 2>&1 | tee "$GITHUB_WORKSPACE/moving-h-positive-mass-axioms.log"
 
       - name: Build the focused moving-H boundary audit
         shell: bash
@@ -100,6 +113,8 @@ jobs:
           path: |
             curtiss-progress-build.log
             curtiss-progress-axioms.log
+            moving-h-positive-mass-build.log
+            moving-h-positive-mass-axioms.log
             moving-h-build.log
             moving-h-axioms.log
             moving-h-integrity.log
