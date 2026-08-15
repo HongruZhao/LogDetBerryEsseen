@@ -1,5 +1,4 @@
 import Mathlib.MeasureTheory.OuterMeasure.BorelCantelli
-import Mathlib.Topology.Instances.Real
 
 /-!
 # First Borel--Cantelli transfer for the manuscript
