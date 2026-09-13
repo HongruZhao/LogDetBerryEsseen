@@ -34,19 +34,27 @@ with the constant in $(0.50715638,0.50715639)$.
 For every positive-definite population correlation matrix $R$, put
 
 $$
-a_R=\operatorname{tr}((R-I_p)^2),\quad
-s_R^2=V_{m,p}+2a_R/m,\quad
+a_R=\mathrm{tr}((R-I_p)^2),\quad
+s_R^2=V_{m,p}+2a_R/m.
+$$
+
+$$
 Z_R=\frac{\log\det\widehat R-\log\det R-b_{m,p}}{s_R}.
 $$
 
 The general-correlation result gives a universal constant $C$ such that
 
 $$
-d_K(Z_R,N(0,1))\le C\{\lambda_{m,p}+p^{-1}+\rho_R+Q_R^{1/3}\}
-\le C'\{\lambda_{m,p}+p^{-1/3}\},
+d_K(Z_R,N(0,1))\le C(\lambda_{m,p}+p^{-1}+\rho_R+Q_R^{1/3})
 $$
 
-where $\rho_R=\operatorname{tr}|R-I_p|^3/(m^2s_R^3)$ and $Q_R=4(p+a_R)/(m^2s_R^2)$. No uniform eigenvalue bounds are imposed on $R$. This general-correlation estimate is an upper bound; sharpness is established for the null results above.
+and consequently
+
+$$
+d_K(Z_R,N(0,1))\le C'(\lambda_{m,p}+p^{-1/3}),
+$$
+
+where $\rho_R=\mathrm{tr}|R-I_p|^3/(m^2s_R^3)$ and $Q_R=4(p+a_R)/(m^2s_R^2)$. No uniform eigenvalue bounds are imposed on $R$. This general-correlation estimate is an upper bound; sharpness is established for the null results above.
 
 ## Main declarations
 
