@@ -11,3 +11,9 @@ retained for history and are not covered by the current proof audit.
 
 SHA-256 checksums are in [SHA256SUMS](SHA256SUMS). The source scanner verifies
 these archive checksums without treating archived releases as current Lean source.
+
+## Retired supporting modules
+
+The [v1.1.3 retired modules](v1.1.3-retired) preserve sources removed from the
+active three-result build. They are historical source material, not current
+formalization targets. Earlier verification reports remain under `audit/`.

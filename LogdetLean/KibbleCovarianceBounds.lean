@@ -1,6 +1,6 @@
 import LogdetLean.GeneralRFrullaniLaplace
 import LogdetLean.RadialLaplaceKernel
-import LogdetLean.KibbleCovarianceBridge
+import LogdetLean.GeneralRVarianceBasics
 import LogdetLean.RpowIntervalLimit
 
 /-!

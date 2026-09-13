@@ -1,80 +1,34 @@
-# Mathematical provenance
+# Provenance
 
-This capsule distinguishes formal deduction from scholarly attribution. Lean
-checks proof terms; it does not determine who first proved a mathematical
-result or whether a citation is historically complete.
+This project formalizes three main results in Hongru Zhao's *Sharp
+Berry–Esseen Bounds for the Log Determinant of a Gaussian Sample Correlation
+Matrix*: Theorem 4.2, Theorem 5.2, and Corollary 6.2.
 
-No cited paper is imported as an unproved project axiom. A formal dependency
-is either proved in the included Lean source or imported from the pinned
-mathlib dependency. Citations below identify mathematical origins, standard
-ingredients, or proof routes; they are not trust escapes from the Lean
-kernel.
+The sources were extracted from the supplied v1.1.2 Lean capsule, whose SHA-256 is
+`563800a00392742c4c4aa1e37296d274bd66b61abf7ec7a11844d1258220dc4e`.
+Both supplied manuscript source versions were used for the statement review.
+The original capsule is identified in the paper by
+[DOI 10.5281/zenodo.21898548](https://doi.org/10.5281/zenodo.21898548).
+That DOI does not identify this revised GitHub source tree.
 
-This document describes the proof routes represented in the source. The
-successful fresh and post-ZIP verification runs are recorded in the release
-evidence specified in `REPRODUCIBILITY.md`.
+Revision 1.1.4 narrows the public interface to three theorem statements and
+retains their transitive supporting modules. Five unconditional definitions
+and lemmas were extracted without changing their bodies into
+`LogdetLean/GeneralRVarianceBasics.lean`; one importing module was updated.
+The remaining original proof modules are unchanged. The [verification
+record](VERIFICATION.md) includes a source-identity receipt.
 
-## Independent beta product
+The historical ZIPs and retired source modules remain in [archives](../archives/README.md),
+and earlier audit reports remain under `audit/`. The broader v1.1.3 source
+package is also available in [Git history](https://github.com/HongruZhao/LogDetBerryEsseen/tree/ec41febe106f5b4c543bf908ff6e25764fe210bd).
 
-The exact beta-product representation for normalized Gram and correlation
-determinants is classical. The parameterization and sequential
-Gram--Schmidt route used here agree with Alain Rouault, *Asymptotic behavior
-of random determinants in the Laguerre, Gram and Jacobi ensembles* (2007),
-and his earlier pathwise treatment of uniform Gram and Wishart ensembles.
-The underlying Gaussian quadratic-form and Wishart decompositions go back to
-work including Bartlett and Cochran.
+The proof uses classical Gaussian, beta, gamma, Bartlett, and Wishart
+identities, developed in the included Lean sources or the pinned Mathlib
+library. A cited paper is not imported as an unproved axiom. The manuscript
+provides the mathematical bibliography; this repository does not establish
+priority or certify that bibliography.
 
-The capsule proves the centered Gaussian sample statement directly. The
-literature is credited for the mathematical result and route, not used as an
-axiom.
-
-## Mellin transforms, cumulants, and the null expansion
-
-The beta Mellin transform and gamma-function identities are classical. The
-Lean source develops the exact log-beta law, cumulant series, characteristic
-function, and full-frequency estimates needed for this paper. The resulting
-endpoint-uniform signed first Edgeworth assembly is paper-specific.
-
-The finite normal-approximation result of Heiny, Johnston, and Prochno and the
-higher-order proportional-regime calculations of Xie and Sun are relevant
-comparisons in the manuscript. They are not substituted for the two Theorem
-4.2 endpoints and are not imported as formal assumptions.
-
-## General population correlation
-
-The proof uses classical Gaussian and Wishart structures, including the
-Wishart density, matrix-gamma transform, orthogonal invariance, and
-partitioned-Wishart identities commonly presented in multivariate-analysis
-references such as Muirhead. The decomposition and several covariance and
-transform calculations also build on formulas developed in Hongru Zhao's
-earlier work on Gaussian sample-correlation log determinants.
-
-For this capsule, every non-mathlib identity required by the thirteen advertised
-endpoints is represented by included Lean source. The paper-facing endpoints
-also contain the finite law bridges from the literal iid Gaussian sample to
-the canonical residual model.
-
-Four elementary variance and trace declarations formerly stored with broader
-reusable computations have been placed in
-`LogdetLean/GeneralRVarianceTraceBasics.lean`. Their statements and proofs are
-unchanged in substance; the paper-specific extraction avoids publishing an
-unrelated earlier-paper module.
-
-## Uniform asymptotics and the square constant
-
-The `A` and `V` equivalents are proved from positive reciprocal-power series,
-elementary sum comparisons, and exact beta cumulants. Public endpoint
-`paperEquationSixThree_exact` packages the stronger explicit tail bounds and
-the growing-gap equivalent that establish (6.3). Public endpoint
-`paperEquationSixSix_exact` packages the exact hard-edge recurrence, the
-square constant, and strict decrease required by (6.6). The square constant
-is evaluated through the corresponding hard-edge series, the classical values
-of the even zeta sum, and the positive series defining `zeta(3)`. Lean
-separately checks the rational interval used for the displayed decimal.
-
-## What this record does not claim
-
-This summary does not claim priority for classical ingredients, certify the
-bibliography, or assert that every informal analogy in the manuscript is a
-formal proof dependency. Exact paper-to-Lean statement relations are recorded
-separately in [`STATEMENT_CROSSWALK.md`](STATEMENT_CROSSWALK.md).
+The public statement/proof layout follows the examples
+[PrimeGaps186](https://github.com/openai/PrimeGaps186) and
+[NavierStokesAndEuler](https://github.com/openai/NavierStokesAndEuler).
+The verification record reports only checks actually run for this project.

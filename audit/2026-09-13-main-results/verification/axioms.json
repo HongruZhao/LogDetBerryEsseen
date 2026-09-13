@@ -1,0 +1,35 @@
+{
+  "checked_declarations": 3,
+  "project_axioms": [],
+  "sorry_free_import_closure": true,
+  "declarations": [
+    {
+      "name": "LogDetBerryEsseen.sharp_null",
+      "role": "Theorem 4.2",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LogDetBerryEsseen.general_correlation",
+      "role": "Theorem 5.2",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    },
+    {
+      "name": "LogDetBerryEsseen.worst_case",
+      "role": "Corollary 6.2",
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ]
+    }
+  ],
+  "limitation": "Axiom reports do not discharge ordinary theorem hypotheses."
+}

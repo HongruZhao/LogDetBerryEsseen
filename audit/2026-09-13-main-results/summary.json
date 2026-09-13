@@ -1,0 +1,52 @@
+{
+  "date": "2026-09-13",
+  "version": "1.1.4",
+  "public_theorems": 3,
+  "all_source_modules_in_main_or_verification_import_closure": true,
+  "project_build": "passed",
+  "lake_jobs": 4062,
+  "compiler_errors": 0,
+  "inherited_linter_warnings": 16,
+  "verification_script_exit_code": 0,
+  "named_axiom_reports": 3,
+  "project_axioms": [],
+  "allowed_foundations": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ],
+  "imported_closure_sorry_free": true,
+  "leanchecker_modules": [
+    {
+      "module": "LogdetLean.NullUniformEdgeworthTarget",
+      "exit_code": 0
+    },
+    {
+      "module": "LogdetLean.GeneralRPaperExactTranslation",
+      "exit_code": 0
+    },
+    {
+      "module": "LogdetLean.NullSharpSupremum",
+      "exit_code": 0
+    },
+    {
+      "module": "LogDetBerryEsseen",
+      "exit_code": 0
+    }
+  ],
+  "verification_method": "The verify.sh script completed with exit code zero under set -euo pipefail, including every named leanchecker invocation.",
+  "revision_build_reused_unchanged_project_artifacts": true,
+  "changed_sources_and_affected_imports_rebuilt": true,
+  "pinned_dependency_cache_reused": true,
+  "all_nine_dependency_revisions_matched": true,
+  "lean_or_mathlib_rebuilt_from_source": false,
+  "comparator_run": false,
+  "nanoda_run": false,
+  "lean": "4.33.0-rc2",
+  "lean_commit": "d8b18978322de05a8f3dba51ef03cf5461676c17",
+  "mathlib_commit": "641fbd329d4ffb62bef83c51f54088469056bd36",
+  "verified_source_and_pin_hashes": 134,
+  "active_lean_files": 131,
+  "scalar_limit_certificate_in_active_sources": false,
+  "historical_sources_preserved_outside_active_library": true
+}

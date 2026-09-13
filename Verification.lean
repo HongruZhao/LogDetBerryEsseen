@@ -1,87 +1,14 @@
 import LogDetBerryEsseen
-import LogdetLean.ConditionalVariance
 import Mathlib.Util.PrintSorries
 
-/-!
-# Reproducible axiom and hypothesis audit
+/-! Check the three public results and their complete imported proof closure. -/
 
-Print both the full original types and the public wrappers. The two optional
-variance declarations retain `hlimit` in their types even though their axiom
-sets contain only the standard foundations.
--/
+#check LogDetBerryEsseen.sharp_null
+#check LogDetBerryEsseen.general_correlation
+#check LogDetBerryEsseen.worst_case
 
-#check LogdetLean.map_centeredSampleCorrelationDet_succ_eq_map_product_betaFactors
-#check LogdetLean.uniformNullEdgeworthTarget_proved
-#check LogdetLean.tendsto_uniformActualNullSharpKolmogorov_relative_error_zero
-#check LogdetLean.paperTheoremFiveOne_exact
-#check LogdetLean.paperTheoremFiveTwo_exact
-#check LogdetLean.paperTheoremFiveTwo_arbitraryCovariance_exact
-#check LogdetLean.tendsto_nullASeries_div_uniformScale
-#check LogdetLean.paperEquationSixThree_exact
-#check LogdetLean.tendsto_nullVSeries_div_uniformScale
-#check LogdetLean.tendsto_square_nullVSeries_sub_two_log
-#check LogdetLean.paperEquationSixSix_exact
-#check LogdetLean.tendsto_scaledNullKolmogorovSup_closed
-#check LogdetLean.nullSharpSupremumConstant_decimal8
-#check LogDetBerryEsseen.beta_product
-#check LogDetBerryEsseen.null_edgeworth
-#check LogDetBerryEsseen.null_sharp_kolmogorov
-#check LogDetBerryEsseen.general_correlation_leading
-#check LogDetBerryEsseen.general_correlation_full
-#check LogDetBerryEsseen.general_covariance_full
-#check LogDetBerryEsseen.third_cumulant_equivalent
-#check LogDetBerryEsseen.growing_gap
-#check LogDetBerryEsseen.variance_equivalent
-#check LogDetBerryEsseen.square_variance
-#check LogDetBerryEsseen.hard_edge_constants
-#check LogDetBerryEsseen.square_supremum
-#check LogDetBerryEsseen.square_constant_decimal
-#check LogdetLean.map_rawPearson_iidGaussian_succ_eq_canonicalResidual
-#check LogdetLean.map_Z0mpStatistic_eq_standardizedNullLaw
-#check LogdetLean.paperGeneralRSampleCorrelation_eq_printedScatterFormula
-#check LogdetLean.map_paperGeneralRStatistic_iidGaussian_eq_ZRmpStatistic
-#check LogdetLean.nullCenter_eq_nullCenterDigammaSeries
-#check LogdetLean.nullVariance_eq_nullVSeries
-#check LogdetLean.nullThirdMagnitude_eq_nullASeries
-#check LogdetLean.nullSkewScale_eq_nullLambdaSeries
-#check LogdetLean.variance_generalRLogDetNumerator_eq_exactVarianceSeries_of_scalarLimits
-#check LogdetLean.variance_generalRLogDetNumerator_proxy_bounds_of_scalarLimits
-
-#print axioms LogdetLean.map_centeredSampleCorrelationDet_succ_eq_map_product_betaFactors
-#print axioms LogdetLean.uniformNullEdgeworthTarget_proved
-#print axioms LogdetLean.tendsto_uniformActualNullSharpKolmogorov_relative_error_zero
-#print axioms LogdetLean.paperTheoremFiveOne_exact
-#print axioms LogdetLean.paperTheoremFiveTwo_exact
-#print axioms LogdetLean.paperTheoremFiveTwo_arbitraryCovariance_exact
-#print axioms LogdetLean.tendsto_nullASeries_div_uniformScale
-#print axioms LogdetLean.paperEquationSixThree_exact
-#print axioms LogdetLean.tendsto_nullVSeries_div_uniformScale
-#print axioms LogdetLean.tendsto_square_nullVSeries_sub_two_log
-#print axioms LogdetLean.paperEquationSixSix_exact
-#print axioms LogdetLean.tendsto_scaledNullKolmogorovSup_closed
-#print axioms LogdetLean.nullSharpSupremumConstant_decimal8
-#print axioms LogDetBerryEsseen.beta_product
-#print axioms LogDetBerryEsseen.null_edgeworth
-#print axioms LogDetBerryEsseen.null_sharp_kolmogorov
-#print axioms LogDetBerryEsseen.general_correlation_leading
-#print axioms LogDetBerryEsseen.general_correlation_full
-#print axioms LogDetBerryEsseen.general_covariance_full
-#print axioms LogDetBerryEsseen.third_cumulant_equivalent
-#print axioms LogDetBerryEsseen.growing_gap
-#print axioms LogDetBerryEsseen.variance_equivalent
-#print axioms LogDetBerryEsseen.square_variance
-#print axioms LogDetBerryEsseen.hard_edge_constants
-#print axioms LogDetBerryEsseen.square_supremum
-#print axioms LogDetBerryEsseen.square_constant_decimal
-#print axioms LogdetLean.map_rawPearson_iidGaussian_succ_eq_canonicalResidual
-#print axioms LogdetLean.map_Z0mpStatistic_eq_standardizedNullLaw
-#print axioms LogdetLean.paperGeneralRSampleCorrelation_eq_printedScatterFormula
-#print axioms LogdetLean.map_paperGeneralRStatistic_iidGaussian_eq_ZRmpStatistic
-#print axioms LogdetLean.nullCenter_eq_nullCenterDigammaSeries
-#print axioms LogdetLean.nullVariance_eq_nullVSeries
-#print axioms LogdetLean.nullThirdMagnitude_eq_nullASeries
-#print axioms LogdetLean.nullSkewScale_eq_nullLambdaSeries
-#print axioms LogdetLean.variance_generalRLogDetNumerator_eq_exactVarianceSeries_of_scalarLimits
-#print axioms LogdetLean.variance_generalRLogDetNumerator_proxy_bounds_of_scalarLimits
+#print axioms LogDetBerryEsseen.sharp_null
+#print axioms LogDetBerryEsseen.general_correlation
+#print axioms LogDetBerryEsseen.worst_case
 
 #print sorries

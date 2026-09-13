@@ -1,5 +1,5 @@
 name = "logdet_berry_esseen_lean"
-version = "1.1.3"
+version = "1.1.4"
 defaultTargets = ["LogDetBerryEsseen", "Verification"]
 
 [[lean_lib]]

@@ -37,15 +37,9 @@ lake env lean Verification.lean > "$report_dir/axioms_and_types.txt" 2>&1
 python3 -B scripts/check_axioms.py "$report_dir/axioms_and_types.txt" "$report_dir/axioms.json"
 
 modules=(
-  LogdetLean.SampleCorrelationBeta
   LogdetLean.NullUniformEdgeworthTarget
   LogdetLean.GeneralRPaperExactTranslation
-  LogdetLean.NullAUniformAsymptotics
-  LogdetLean.NullVUniformAsymptotics
-  LogdetLean.NullRefinedAsymptotics
   LogdetLean.NullSharpSupremum
-  LogdetLean.NullSharpSupremumDecimal
-  LogdetLean.ConditionalVariance
   LogDetBerryEsseen
 )
 for module in "${modules[@]}"; do

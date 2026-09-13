@@ -1,0 +1,77 @@
+⚠ [3965/4062] Replayed LogdetLean.MatrixSphericalExtension
+warning: LogdetLean/MatrixSphericalExtension.lean:458:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: LogdetLean/MatrixSphericalExtension.lean:461:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+⚠ [4053/4062] Replayed LogdetLean.NullRegimeAsymptotics
+warning: LogdetLean/NullRegimeAsymptotics.lean:125:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:140:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:142:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:311:29: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:329:28: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:332:28: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:356:41: This simp argument is unused:
+  Nat.cast_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.cast_add, Nat.cast_one, add_zero]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:360:10: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:431:28: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:435:28: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:558:27: This simp argument is unused:
+  pow_one
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [nsmul_eq_mul]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:575:10: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:925:72: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:926:72: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+ℹ [4061/4062] Replayed Verification
+info: Verification.lean:6:0: LogDetBerryEsseen.sharp_null : LogDetBerryEsseen.Challenge.sharpNull
+info: Verification.lean:7:0: LogDetBerryEsseen.general_correlation : LogDetBerryEsseen.Challenge.generalCorrelation
+info: Verification.lean:8:0: LogDetBerryEsseen.worst_case : LogDetBerryEsseen.Challenge.worstCase
+info: Verification.lean:10:0: 'LogDetBerryEsseen.sharp_null' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Verification.lean:11:0: 'LogDetBerryEsseen.general_correlation' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Verification.lean:12:0: 'LogDetBerryEsseen.worst_case' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Verification.lean:14:0: Declarations are sorry-free!
+Build completed successfully (4062 jobs).

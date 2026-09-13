@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_TOOLCHAIN = "leanprover/lean4:v4.33.0-rc2"
 EXPECTED_MATHLIB_REV = "641fbd329d4ffb62bef83c51f54088469056bd36"
-EXPECTED_LEAN_FILES = 142
+EXPECTED_LEAN_FILES = 131
 IGNORED_DIRS = {".git", ".lake", "__pycache__"}
 
 def mask_lean_comments_and_strings(text: str) -> str:
@@ -92,6 +92,8 @@ def main() -> int:
             if p.is_symlink():
                 failures.append(f"symbolic link: {p.relative_to(ROOT)}")
                 dirs.remove(name)
+            elif base == ROOT and name == "archives":
+                dirs.remove(name)
             elif name in IGNORED_DIRS:
                 if args.release:
                     failures.append(f"generated directory in release: {p.relative_to(ROOT)}")
@@ -127,8 +129,7 @@ def main() -> int:
                 elif dep != "Mathlib" and not dep.startswith("Mathlib."):
                     failures.append(f"{p.relative_to(ROOT)}: unresolved/unapproved import {dep}")
         graph[module] = imports
-    reachable, pending = set(), ["LogDetBerryEsseen", "Verification", "LogdetLean",
-                                 "LogdetLean.PaperAxiomAudit"]
+    reachable, pending = set(), ["LogDetBerryEsseen", "Verification"]
     while pending:
         module = pending.pop()
         if module in reachable:
@@ -159,6 +160,24 @@ def main() -> int:
                 not url.startswith("https://github.com/") or
                 "@" in url.removeprefix("https://")):
             failures.append(f"dependency is not pinned to a public Git revision: {dep.get('name')}")
+    # Historical sources are retained separately and never imported by the
+    # active project. Verify their exact bytes instead of treating them as
+    # additional formalization targets.
+    archive_root = ROOT / "archives"
+    for checksum_file in [archive_root / "SHA256SUMS",
+                          archive_root / "v1.1.3-retired/SHA256SUMS"]:
+        if not checksum_file.is_file():
+            failures.append(f"missing historical checksums: {checksum_file.relative_to(ROOT)}")
+            continue
+        for line in checksum_file.read_text().splitlines():
+            digest, name = line.split(None, 1)
+            rel = Path(name)
+            if rel.is_absolute() or ".." in rel.parts:
+                failures.append("unsafe historical checksum path")
+                continue
+            p = checksum_file.parent / rel
+            if not p.is_file() or p.is_symlink() or hashlib.sha256(p.read_bytes()).hexdigest() != digest:
+                failures.append(f"historical source checksum mismatch: {name}")
     compiled = {".olean", ".ilean", ".trace", ".c", ".o", ".a", ".so", ".dylib", ".dll", ".pyc"}
     secrets = re.compile("(?:" + "ghp" + r"_|github" + r"_pat_)[A-Za-z0-9_]+"
                          + "|BEGIN (?:RSA |EC |OPENSSH )?PRIVATE " + "KEY")
@@ -169,13 +188,6 @@ def main() -> int:
             failures.append(f"symbolic link: {rel}")
             continue
         data = p.read_bytes()
-        if p.parent == ROOT / "archives" and p.suffix == ".zip":
-            checksum_file = ROOT / "archives/SHA256SUMS"
-            entries = dict((name, digest) for digest, name in
-                           (line.split(None, 1) for line in checksum_file.read_text().splitlines()))
-            if entries.get(p.name) != hashlib.sha256(data).hexdigest():
-                failures.append(f"historical archive checksum mismatch: {rel}")
-            continue
         if p.suffix in compiled or p.name == ".DS_Store":
             failures.append(f"generated artifact outside excluded cache: {rel}")
         if b"\x00" in data:
@@ -190,10 +202,10 @@ def main() -> int:
         for failure in failures:
             print("- " + failure, file=sys.stderr)
         return 1
-    print(f"Source audit passed: {len(lean_files)} Lean files; all local imports resolve.")
-    print("No proof placeholders, project axioms, native/unsafe escapes, or custom elaborators.")
+    print(f"Source audit passed: {len(lean_files)} active Lean files; all active imports resolve.")
+    print("No proof placeholders, project axioms, or trust escapes in the active Lean sources.")
     print("Toolchain and public Git dependencies are pinned; source closure is complete.")
-    print("Build caches are excluded from source inspection; kernel checks are separate.")
+    print("Historical archives are checksummed; build caches are excluded. Kernel checks are separate.")
     return 0
 
 
