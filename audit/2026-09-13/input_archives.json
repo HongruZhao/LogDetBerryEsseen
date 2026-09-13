@@ -1,0 +1,20 @@
+[
+  {
+    "archive": "logdet_Berry_Esseen_PTRF_Lean_verification_v1.1.2.zip",
+    "sha256": "563800a00392742c4c4aa1e37296d274bd66b61abf7ec7a11844d1258220dc4e",
+    "entries": 163,
+    "crc_ok": true
+  },
+  {
+    "archive": "logdet_ptrf_PTRF_submission_sources.zip",
+    "sha256": "3e9409441c526bffa90ac85ed219184916a57e0af5545d49785ddbb5afdb4ac0",
+    "entries": 13,
+    "crc_ok": true
+  },
+  {
+    "archive": "logdet_ptrf_arxiv_submission_v1_1_2_Berry_Esseen.zip",
+    "sha256": "80758bc0310151293c71d9cac554e53c4a9b343ef87d74b574d603258e2a4a90",
+    "entries": 2,
+    "crc_ok": true
+  }
+]

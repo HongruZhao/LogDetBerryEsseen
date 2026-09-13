@@ -1,0 +1,39 @@
+import LogdetLean.PaperTable2Endpoints
+import Mathlib.Util.PrintSorries
+
+/-!
+# Kernel axiom audit for the paper-facing public endpoints
+
+Run with lake env lean LogdetLean/PaperAxiomAudit.lean.
+-/
+
+#check LogdetLean.map_centeredSampleCorrelationDet_succ_eq_map_product_betaFactors
+#check LogdetLean.uniformNullEdgeworthTarget_proved
+#check LogdetLean.tendsto_uniformActualNullSharpKolmogorov_relative_error_zero
+#check LogdetLean.paperTheoremFiveOne_exact
+#check LogdetLean.paperTheoremFiveTwo_exact
+#check LogdetLean.paperTheoremFiveTwo_arbitraryCovariance_exact
+#check LogdetLean.tendsto_nullASeries_div_uniformScale
+#check LogdetLean.paperEquationSixThree_exact
+#check LogdetLean.tendsto_nullVSeries_div_uniformScale
+#check LogdetLean.tendsto_square_nullVSeries_sub_two_log
+#check LogdetLean.paperEquationSixSix_exact
+#check LogdetLean.tendsto_scaledNullKolmogorovSup_closed
+#check LogdetLean.nullSharpSupremumConstant_decimal8
+
+#print axioms LogdetLean.map_centeredSampleCorrelationDet_succ_eq_map_product_betaFactors
+#print axioms LogdetLean.uniformNullEdgeworthTarget_proved
+#print axioms LogdetLean.tendsto_uniformActualNullSharpKolmogorov_relative_error_zero
+#print axioms LogdetLean.paperTheoremFiveOne_exact
+#print axioms LogdetLean.paperTheoremFiveTwo_exact
+#print axioms LogdetLean.paperTheoremFiveTwo_arbitraryCovariance_exact
+#print axioms LogdetLean.tendsto_nullASeries_div_uniformScale
+#print axioms LogdetLean.paperEquationSixThree_exact
+#print axioms LogdetLean.tendsto_nullVSeries_div_uniformScale
+#print axioms LogdetLean.tendsto_square_nullVSeries_sub_two_log
+#print axioms LogdetLean.paperEquationSixSix_exact
+#print axioms LogdetLean.tendsto_scaledNullKolmogorovSup_closed
+#print axioms LogdetLean.nullSharpSupremumConstant_decimal8
+
+-- Environment-aware confirmation that this narrow endpoint module is sorry-free.
+#print sorries

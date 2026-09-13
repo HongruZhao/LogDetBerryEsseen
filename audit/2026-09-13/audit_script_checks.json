@@ -1,0 +1,37 @@
+[
+  {
+    "check": "clean source-only candidate",
+    "exit_code": 0,
+    "passed": true
+  },
+  {
+    "check": "comments are not treated as executable trust escapes",
+    "exit_code": 0,
+    "passed": true
+  },
+  {
+    "check": "rejects an added project axiom",
+    "exit_code": 1,
+    "passed": true
+  },
+  {
+    "check": "rejects a proof placeholder",
+    "exit_code": 1,
+    "passed": true
+  },
+  {
+    "check": "rejects an unregistered extra Lean file",
+    "exit_code": 1,
+    "passed": true
+  },
+  {
+    "check": "rejects unexpected axiom",
+    "exit_code": 1,
+    "passed": true
+  },
+  {
+    "check": "rejects missing report",
+    "exit_code": 1,
+    "passed": true
+  }
+]

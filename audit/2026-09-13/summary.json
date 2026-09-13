@@ -1,0 +1,79 @@
+{
+  "date": "2026-09-13",
+  "original_source_build": "passed",
+  "original_lake_jobs": 4068,
+  "updated_source_build": "passed",
+  "updated_lake_jobs": 4072,
+  "original_lean_files_preserved": 138,
+  "total_local_lean_files": 142,
+  "axiom_declarations_checked": 36,
+  "principal_results": 13,
+  "project_axioms": [],
+  "import_closure_sorry_free": true,
+  "leanchecker_modules": [
+    {
+      "module": "LogdetLean.SampleCorrelationBeta",
+      "exit_code": 0,
+      "elapsed_seconds": 5.16
+    },
+    {
+      "module": "LogdetLean.NullUniformEdgeworthTarget",
+      "exit_code": 0,
+      "elapsed_seconds": 5.08
+    },
+    {
+      "module": "LogdetLean.GeneralRPaperExactTranslation",
+      "exit_code": 0,
+      "elapsed_seconds": 5.18
+    },
+    {
+      "module": "LogdetLean.NullAUniformAsymptotics",
+      "exit_code": 0,
+      "elapsed_seconds": 5.69
+    },
+    {
+      "module": "LogdetLean.NullVUniformAsymptotics",
+      "exit_code": 0,
+      "elapsed_seconds": 5.16
+    },
+    {
+      "module": "LogdetLean.NullRefinedAsymptotics",
+      "exit_code": 0,
+      "elapsed_seconds": 5.16
+    },
+    {
+      "module": "LogdetLean.NullSharpSupremum",
+      "exit_code": 0,
+      "elapsed_seconds": 5.0
+    },
+    {
+      "module": "LogdetLean.NullSharpSupremumDecimal",
+      "exit_code": 0,
+      "elapsed_seconds": 5.05
+    },
+    {
+      "module": "LogdetLean.ConditionalVariance",
+      "exit_code": 0,
+      "elapsed_seconds": 4.98
+    },
+    {
+      "module": "LogDetBerryEsseen",
+      "exit_code": 0,
+      "elapsed_seconds": 5.01
+    }
+  ],
+  "compiler_errors": 0,
+  "inherited_linter_warnings": 21,
+  "project_proof_artifacts_reused": false,
+  "dependency_cache_reused": true,
+  "all_nine_dependency_revisions_matched": true,
+  "mathlib_rebuilt_from_source": false,
+  "comparator_run": false,
+  "nanoda_run": false,
+  "semantic_review": "Principal statements and model bridges reviewed; not every manuscript equation or supporting proof independently re-proved.",
+  "remaining_formalization_gap": "Scalar Kibble limit for the optional exact general-correlation variance identity.",
+  "lean": "4.33.0-rc2",
+  "lean_commit": "d8b18978322de05a8f3dba51ef03cf5461676c17",
+  "mathlib_commit": "641fbd329d4ffb62bef83c51f54088469056bd36",
+  "manifest_sha256": "47e7499d3e7d67f2f3152def1c96126a13aeb23b3c2911deee5ae5bdb640d2ff"
+}

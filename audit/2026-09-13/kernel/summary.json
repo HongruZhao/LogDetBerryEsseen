@@ -1,0 +1,52 @@
+[
+  {
+    "module": "LogdetLean.SampleCorrelationBeta",
+    "exit_code": 0,
+    "elapsed_seconds": 5.16
+  },
+  {
+    "module": "LogdetLean.NullUniformEdgeworthTarget",
+    "exit_code": 0,
+    "elapsed_seconds": 5.08
+  },
+  {
+    "module": "LogdetLean.GeneralRPaperExactTranslation",
+    "exit_code": 0,
+    "elapsed_seconds": 5.18
+  },
+  {
+    "module": "LogdetLean.NullAUniformAsymptotics",
+    "exit_code": 0,
+    "elapsed_seconds": 5.69
+  },
+  {
+    "module": "LogdetLean.NullVUniformAsymptotics",
+    "exit_code": 0,
+    "elapsed_seconds": 5.16
+  },
+  {
+    "module": "LogdetLean.NullRefinedAsymptotics",
+    "exit_code": 0,
+    "elapsed_seconds": 5.16
+  },
+  {
+    "module": "LogdetLean.NullSharpSupremum",
+    "exit_code": 0,
+    "elapsed_seconds": 5.0
+  },
+  {
+    "module": "LogdetLean.NullSharpSupremumDecimal",
+    "exit_code": 0,
+    "elapsed_seconds": 5.05
+  },
+  {
+    "module": "LogdetLean.ConditionalVariance",
+    "exit_code": 0,
+    "elapsed_seconds": 4.98
+  },
+  {
+    "module": "LogDetBerryEsseen",
+    "exit_code": 0,
+    "elapsed_seconds": 5.01
+  }
+]

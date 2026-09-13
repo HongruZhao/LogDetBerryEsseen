@@ -1,0 +1,213 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: v0.4
+project:
+  name: LogDetBerryEsseen
+  description: Sharp Berry–Esseen and Edgeworth results for Gaussian sample-correlation log determinants.
+  authors:
+  - Hongru Zhao
+  license: GPL-3.0-only
+sources:
+- title: Sharp Berry–Esseen Bounds for the Log Determinant of a Gaussian Sample Correlation Matrix
+  authors:
+  - Hongru Zhao
+  type: article
+  location: Proposition 4.1; Theorems 4.2, 5.1, 5.2; Proposition 6.1; Corollary 6.2
+  relationship: formalizes
+  note: Compared against both supplied v1.1.2 arXiv and PTRF source archives. The optional exact
+    variance identity is conditional.
+classification:
+  arxiv:
+  - math.PR
+  - math.ST
+  msc2020:
+  - 62H10
+  - 60F05
+  - 60B20
+  - 62E20
+status:
+  scope: Thirteen principal paper results under the stated Gaussian model and dimension conditions.
+    The optional general-correlation variance identity retains an explicit scalar Kibble limit hypothesis;
+    no claim of equation-by-equation manuscript coverage.
+  main_results:
+  - declaration: LogDetBerryEsseen.beta_product
+    file: LogDetBerryEsseen.lean
+    original_declaration: LogdetLean.map_centeredSampleCorrelationDet_succ_eq_map_product_betaFactors
+    verification_status: fresh build and axiom audit passed on 2026-09-13
+    sorry_count: 0
+    axioms: &id001
+    - propext
+    - Classical.choice
+    - Quot.sound
+  - declaration: LogDetBerryEsseen.null_edgeworth
+    file: LogDetBerryEsseen.lean
+    original_declaration: LogdetLean.uniformNullEdgeworthTarget_proved
+    verification_status: fresh build and axiom audit passed on 2026-09-13
+    sorry_count: 0
+    axioms: *id001
+  - declaration: LogDetBerryEsseen.null_sharp_kolmogorov
+    file: LogDetBerryEsseen.lean
+    original_declaration: LogdetLean.tendsto_uniformActualNullSharpKolmogorov_relative_error_zero
+    verification_status: fresh build and axiom audit passed on 2026-09-13
+    sorry_count: 0
+    axioms: *id001
+  - declaration: LogDetBerryEsseen.general_correlation_leading
+    file: LogDetBerryEsseen.lean
+    original_declaration: LogdetLean.paperTheoremFiveOne_exact
+    verification_status: fresh build and axiom audit passed on 2026-09-13
+    sorry_count: 0
+    axioms: *id001
+  - declaration: LogDetBerryEsseen.general_correlation_full
+    file: LogDetBerryEsseen.lean
+    original_declaration: LogdetLean.paperTheoremFiveTwo_exact
+    verification_status: fresh build and axiom audit passed on 2026-09-13
+    sorry_count: 0
+    axioms: *id001
+  - declaration: LogDetBerryEsseen.general_covariance_full
+    file: LogDetBerryEsseen.lean
+    original_declaration: LogdetLean.paperTheoremFiveTwo_arbitraryCovariance_exact
+    verification_status: fresh build and axiom audit passed on 2026-09-13
+    sorry_count: 0
+    axioms: *id001
+  - declaration: LogDetBerryEsseen.third_cumulant_equivalent
+    file: LogDetBerryEsseen.lean
+    original_declaration: LogdetLean.tendsto_nullASeries_div_uniformScale
+    verification_status: fresh build and axiom audit passed on 2026-09-13
+    sorry_count: 0
+    axioms: *id001
+  - declaration: LogDetBerryEsseen.growing_gap
+    file: LogDetBerryEsseen.lean
+    original_declaration: LogdetLean.paperEquationSixThree_exact
+    verification_status: fresh build and axiom audit passed on 2026-09-13
+    sorry_count: 0
+    axioms: *id001
+  - declaration: LogDetBerryEsseen.variance_equivalent
+    file: LogDetBerryEsseen.lean
+    original_declaration: LogdetLean.tendsto_nullVSeries_div_uniformScale
+    verification_status: fresh build and axiom audit passed on 2026-09-13
+    sorry_count: 0
+    axioms: *id001
+  - declaration: LogDetBerryEsseen.square_variance
+    file: LogDetBerryEsseen.lean
+    original_declaration: LogdetLean.tendsto_square_nullVSeries_sub_two_log
+    verification_status: fresh build and axiom audit passed on 2026-09-13
+    sorry_count: 0
+    axioms: *id001
+  - declaration: LogDetBerryEsseen.hard_edge_constants
+    file: LogDetBerryEsseen.lean
+    original_declaration: LogdetLean.paperEquationSixSix_exact
+    verification_status: fresh build and axiom audit passed on 2026-09-13
+    sorry_count: 0
+    axioms: *id001
+  - declaration: LogDetBerryEsseen.square_supremum
+    file: LogDetBerryEsseen.lean
+    original_declaration: LogdetLean.tendsto_scaledNullKolmogorovSup_closed
+    verification_status: fresh build and axiom audit passed on 2026-09-13
+    sorry_count: 0
+    axioms: *id001
+  - declaration: LogDetBerryEsseen.square_constant_decimal
+    file: LogDetBerryEsseen.lean
+    original_declaration: LogdetLean.nullSharpSupremumConstant_decimal8
+    verification_status: fresh build and axiom audit passed on 2026-09-13
+    sorry_count: 0
+    axioms: *id001
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: *id001
+automation:
+  methods:
+  - method: agent
+    framework: Codex
+    tool_setup: Lean 4.33.0-rc2 and pinned Mathlib; source inspection, local build and axiom reports.
+    prompting_notes: Compare the supplied manuscript statements with their Lean types, distinguish
+      axioms from hypotheses, and reorganize the repository with explicit verification scope.
+  notes: The supplied manuscript credits assistance from OpenAI ChatGPT 5.6 Sol Ultra for the original
+    development; that attribution is inherited, not independently reconstructed.
+review:
+  status: agent-reviewed
+  notes: Fresh local source build, 36 named axiom reports, imported-closure sorry audit, and ten
+    leanchecker module checks passed on 2026-09-13. Principal statement and model-bridge review only;
+    no independent human semantic review claimed. Comparator and Nanoda were not run. Challenge.lean
+    reuses the development definitions and imports.
+alignment:
+  namespace: LogDetBerryEsseen
+  statements:
+  - source: Proposition 4.1
+    lean: LogDetBerryEsseen.beta_product
+    original_lean: LogdetLean.map_centeredSampleCorrelationDet_succ_eq_map_product_betaFactors
+    module: LogDetBerryEsseen
+    original_module: LogdetLean.SampleCorrelationBeta
+    status: proved
+  - source: 'Theorem 4.2: signed expansion'
+    lean: LogDetBerryEsseen.null_edgeworth
+    original_lean: LogdetLean.uniformNullEdgeworthTarget_proved
+    module: LogDetBerryEsseen
+    original_module: LogdetLean.NullUniformEdgeworthTarget
+    status: proved
+  - source: 'Theorem 4.2: sharp equivalent'
+    lean: LogDetBerryEsseen.null_sharp_kolmogorov
+    original_lean: LogdetLean.tendsto_uniformActualNullSharpKolmogorov_relative_error_zero
+    module: LogDetBerryEsseen
+    original_module: LogdetLean.NullUniformEdgeworthTarget
+    status: proved
+  - source: Theorem 5.1
+    lean: LogDetBerryEsseen.general_correlation_leading
+    original_lean: LogdetLean.paperTheoremFiveOne_exact
+    module: LogDetBerryEsseen
+    original_module: LogdetLean.GeneralRPaperExactTranslation
+    status: proved
+  - source: 'Theorem 5.2: correlation'
+    lean: LogDetBerryEsseen.general_correlation_full
+    original_lean: LogdetLean.paperTheoremFiveTwo_exact
+    module: LogDetBerryEsseen
+    original_module: LogdetLean.GeneralRPaperExactTranslation
+    status: proved
+  - source: 'Theorem 5.2: arbitrary covariance'
+    lean: LogDetBerryEsseen.general_covariance_full
+    original_lean: LogdetLean.paperTheoremFiveTwo_arbitraryCovariance_exact
+    module: LogDetBerryEsseen
+    original_module: LogdetLean.GeneralRPaperExactTranslation
+    status: proved
+  - source: 'Proposition 6.1: equation (6.2)'
+    lean: LogDetBerryEsseen.third_cumulant_equivalent
+    original_lean: LogdetLean.tendsto_nullASeries_div_uniformScale
+    module: LogDetBerryEsseen
+    original_module: LogdetLean.NullAUniformAsymptotics
+    status: proved
+  - source: 'Proposition 6.1: equation (6.3)'
+    lean: LogDetBerryEsseen.growing_gap
+    original_lean: LogdetLean.paperEquationSixThree_exact
+    module: LogDetBerryEsseen
+    original_module: LogdetLean.PaperTable2Endpoints
+    status: proved
+  - source: 'Proposition 6.1: equation (6.4)'
+    lean: LogDetBerryEsseen.variance_equivalent
+    original_lean: LogdetLean.tendsto_nullVSeries_div_uniformScale
+    module: LogDetBerryEsseen
+    original_module: LogdetLean.NullVUniformAsymptotics
+    status: proved
+  - source: 'Proposition 6.1: equation (6.5)'
+    lean: LogDetBerryEsseen.square_variance
+    original_lean: LogdetLean.tendsto_square_nullVSeries_sub_two_log
+    module: LogDetBerryEsseen
+    original_module: LogdetLean.NullRefinedAsymptotics
+    status: proved
+  - source: 'Proposition 6.1: equation (6.6)'
+    lean: LogDetBerryEsseen.hard_edge_constants
+    original_lean: LogdetLean.paperEquationSixSix_exact
+    module: LogDetBerryEsseen
+    original_module: LogdetLean.PaperTable2Endpoints
+    status: proved
+  - source: 'Corollary 6.2: supremum'
+    lean: LogDetBerryEsseen.square_supremum
+    original_lean: LogdetLean.tendsto_scaledNullKolmogorovSup_closed
+    module: LogDetBerryEsseen
+    original_module: LogdetLean.NullSharpSupremum
+    status: proved
+  - source: 'Corollary 6.2: rational interval'
+    lean: LogDetBerryEsseen.square_constant_decimal
+    original_lean: LogdetLean.nullSharpSupremumConstant_decimal8
+    module: LogDetBerryEsseen
+    original_module: LogdetLean.NullSharpSupremumDecimal
+    status: proved
+acknowledgements: The authors and contributors of Lean, Mathlib and Lake. The repository presentation
+  follows the result, assumption and verification structure of openai/PrimeGaps186 and openai/NavierStokesAndEuler.

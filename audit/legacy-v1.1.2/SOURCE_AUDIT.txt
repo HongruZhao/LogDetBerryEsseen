@@ -1,0 +1,5 @@
+Source audit passed for 138 Lean source files.
+All local imports resolve inside the capsule; all external imports are Mathlib.
+No sorry, admit, sorryAx, project axiom, postulate, constant declaration,
+unsafe/native/environment escape, custom elaborator, symbolic link, compiled
+proof artifact, machine-specific path, or recognized credential was found.

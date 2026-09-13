@@ -1,0 +1,349 @@
+✔ [3795/3886] Built LogdetLean.DeterminantNormalization (7.6s)
+✔ [3798/3886] Built LogdetLean.CorrelationSpectralAlgebra (8.6s)
+✔ [3803/3888] Built LogdetLean.GeneralRModel (8.9s)
+✔ [3804/3888] Built LogdetLean.GeneralRVarianceTraceBasics (8.9s)
+✔ [3805/3888] Built LogdetLean.EdgeworthTransfer (9.2s)
+✔ [3809/3892] Built LogdetLean.GramSchmidtProjection (9.4s)
+✔ [3810/3892] Built LogdetLean.GaussianSubspace (9.4s)
+✔ [3815/3894] Built LogdetLean.BetaMellin (9.7s)
+✔ [3818/3894] Built LogdetLean.ScalarGammaBetaBridge (11s)
+✔ [3822/3894] Built LogdetLean.WishartScalarThird (5.0s)
+✔ [3824/3895] Built LogdetLean.NormalizedGram (4.4s)
+✔ [3829/3895] Built LogdetLean.CorrelationMatrixAlgebra (4.7s)
+✔ [3831/3895] Built LogdetLean.KolmogorovDistance (4.6s)
+✔ [3834/3895] Built LogdetLean.GaussianScatter (4.0s)
+✔ [3835/3895] Built LogdetLean.SignedEdgeworthComparator (4.9s)
+✔ [3836/3895] Built LogdetLean.ComplexBetaMellin (4.9s)
+✔ [3837/3895] Built LogdetLean.GaussianLinearIndependence (5.0s)
+✔ [3838/3944] Built LogdetLean.WishartScalarDifferentiation (4.4s)
+✔ [3885/3978] Built LogdetLean.PolygammaSeries (17s)
+✔ [3888/3978] Built LogdetLean.GramSchmidtDeterminant (4.5s)
+✔ [3889/3978] Built LogdetLean.CorrelationEigenvalues (4.6s)
+✔ [3890/3978] Built LogdetLean.FullTarget (4.8s)
+✔ [3891/3978] Built LogdetLean.FixedSubspaceGaussian (7.7s)
+✔ [3892/3978] Built LogdetLean.QuantitativeFourier (5.3s)
+✔ [3893/3978] Built LogdetLean.NormalScaleComparison (5.7s)
+✔ [3896/3982] Built LogdetLean.FejerKernel (6.8s)
+✔ [3898/3982] Built LogdetLean.GeneralRLogdetAlgebra (4.1s)
+✔ [3899/3982] Built LogdetLean.NonvanishingCurveLog (4.5s)
+✔ [3900/3982] Built LogdetLean.ComplexExponentialPerturbation (3.9s)
+✔ [3902/3982] Built LogdetLean.GeneralRRateAlgebra (5.1s)
+✔ [3903/3982] Built LogdetLean.HermiteTailCovariance (3.7s)
+✔ [3905/3982] Built LogdetLean.GaussianAntiConcentration (4.9s)
+✔ [3907/3985] Built LogdetLean.LogGammaPolygamma (4.7s)
+✔ [3910/3985] Built LogdetLean.SequentialBeta (5.4s)
+✔ [3914/3985] Built LogdetLean.WishartPopulationCorrection (4.9s)
+✔ [3915/4002] Built LogdetLean.GaussianPairLaplace (6.5s)
+✔ [3916/4007] Built LogdetLean.NullVA (5.1s)
+✔ [3917/4007] Built LogdetLean.AbstractSmoothingKernel (12s)
+✔ [3920/4007] Built LogdetLean.ConvolutionMoments (7.1s)
+✔ [3921/4012] Built LogdetLean.KolmogorovPerturbation (6.0s)
+✔ [3925/4012] Built LogdetLean.FejerCDFInversion (8.3s)
+✔ [3926/4012] Built LogdetLean.CenteredGaussianSample (8.6s)
+✔ [3927/4012] Built LogdetLean.GammaMellin (6.5s)
+✔ [3931/4012] Built LogdetLean.GaussianSampleCorrelation (6.5s)
+✔ [3932/4013] Built LogdetLean.WishartPopulationLogDerivative (6.9s)
+✔ [3933/4013] Built LogdetLean.RpowIntervalLimit (6.5s)
+✔ [3934/4013] Built LogdetLean.FixedPastBeta (7.8s)
+✔ [3936/4013] Built LogdetLean.BetaCumulantSeries (5.6s)
+✔ [3937/4014] Built LogdetLean.CDFSmoothingSwap (5.9s)
+✔ [3938/4014] Built LogdetLean.LogBetaCharacteristic (5.4s)
+✔ [3939/4014] Built LogdetLean.ChebyshevKolmogorov (5.0s)
+✔ [3977/4068] Built LogdetLean.NegativeBinomialTail (4.9s)
+✔ [3983/4068] Built LogdetLean.NormalizedGramScaling (4.9s)
+✔ [3984/4068] Built LogdetLean.GeneralRDecomposition (5.8s)
+✔ [3985/4068] Built LogdetLean.GaussianBetaBridge (4.3s)
+✔ [3986/4068] Built LogdetLean.SignedComparatorSmoothing (12s)
+✔ [3987/4068] Built LogdetLean.SequentialUniformization (3.8s)
+✔ [3988/4068] Built LogdetLean.WishartBetaGammaFactors (6.6s)
+✔ [3989/4068] Built LogdetLean.FejerSmoothingFourier (5.2s)
+✔ [3990/4068] Built LogdetLean.HermiteResidualAlgebra (3.6s)
+✔ [3991/4068] Built LogdetLean.GeneralRRadialMoments (3.8s)
+✔ [3992/4068] Built LogdetLean.GaussianColumnProduct (4.2s)
+✔ [3993/4068] Built LogdetLean.KibbleCovarianceSeries (13s)
+✔ [3994/4068] Built LogdetLean.SampleCorrelationBeta (4.0s)
+✔ [3995/4068] Built LogdetLean.WishartMellinLaplace (5.4s)
+✔ [3996/4068] Built LogdetLean.SignedDensityFourierSmoothing (5.1s)
+✔ [3997/4068] Built LogdetLean.HigherCumulants (11s)
+✔ [3998/4068] Built LogdetLean.GeneralRAnalyticLogSmoothing (5.6s)
+✔ [3999/4068] Built LogdetLean.GeneralRResidualMoments (6.1s)
+✔ [4000/4068] Built LogdetLean.CenteredLogBetaLaw (4.8s)
+✔ [4001/4068] Built LogdetLean.WishartSpectralRotation (5.3s)
+✔ [4002/4068] Built LogdetLean.WishartColumnRotation (5.3s)
+✔ [4003/4068] Built LogdetLean.WishartComplexTransform (5.1s)
+✔ [4004/4068] Built LogdetLean.GammaModulusProduct (5.8s)
+✔ [4005/4068] Built LogdetLean.GaussianSphereDirection (8.3s)
+✔ [4006/4068] Built LogdetLean.AllOrderPolygamma (6.3s)
+✔ [4007/4068] Built LogdetLean.SignedEdgeworthDensity (7.3s)
+✔ [4008/4068] Built LogdetLean.ComplexPolygammaSeries (7.1s)
+✔ [4009/4068] Built LogdetLean.GeneralRNonlinearRemainder (5.8s)
+✔ [4010/4068] Built LogdetLean.HermiteResidualProjection (6.4s)
+✔ [4011/4068] Built LogdetLean.NullCenterStandardization (6.2s)
+✔ [4012/4068] Built LogdetLean.WishartSequentialKernel (6.3s)
+✔ [4013/4068] Built LogdetLean.ComplexDigammaSeries (6.1s)
+✔ [4014/4068] Built LogdetLean.NullCharacteristicFunction (4.8s)
+✔ [4015/4068] Built LogdetLean.GeneralRExactVarianceSeries (5.2s)
+✔ [4016/4068] Built LogdetLean.AllOrderCumulantBridge (5.6s)
+✔ [4017/4068] Built LogdetLean.WishartActualComplexBridge (5.2s)
+✔ [4018/4068] Built LogdetLean.WishartLogDetMoments (6.4s)
+✔ [4019/4068] Built LogdetLean.GeneralRPairLaplace (7.9s)
+⚠ [4020/4068] Built LogdetLean.MatrixSphericalExtension (11s)
+warning: LogdetLean/MatrixSphericalExtension.lean:458:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: LogdetLean/MatrixSphericalExtension.lean:461:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+✔ [4021/4068] Built LogdetLean.StandardizedCumulantBridge (3.6s)
+✔ [4022/4068] Built LogdetLean.WishartComplexMGF (4.4s)
+✔ [4023/4068] Built LogdetLean.RadialLaplaceKernel (3.6s)
+✔ [4024/4068] Built LogdetLean.FrullaniLogTruncation (3.7s)
+✔ [4025/4068] Built LogdetLean.GeneralRCenterIdentity (3.9s)
+✔ [4026/4068] Built LogdetLean.OriginalGaussianPearsonReduction (3.6s)
+✔ [4027/4068] Built LogdetLean.FrullaniLogCovarianceLimit (2.2s)
+✔ [4028/4068] Built LogdetLean.ScaleSeparation (22s)
+✔ [4029/4068] Built LogdetLean.GeneralRFrullaniLaplace (2.6s)
+✔ [4030/4068] Built LogdetLean.GeneralRLeadingVarianceAlgebra (2.0s)
+✔ [4031/4068] Built LogdetLean.NullCharacteristicTails (3.7s)
+✔ [4032/4068] Built LogdetLean.KibbleCovarianceBridge (3.5s)
+✔ [4033/4068] Built LogdetLean.NullLocalCharacteristic (4.1s)
+✔ [4034/4068] Built LogdetLean.GeneralRConcreteRates (3.4s)
+✔ [4035/4068] Built LogdetLean.WishartIdentityLogDerivative (3.7s)
+✔ [4036/4068] Built LogdetLean.NullWeakCLT (3.8s)
+✔ [4037/4068] Built LogdetLean.NullGlobalPolynomial (5.1s)
+✔ [4038/4068] Built LogdetLean.KibbleCovarianceBounds (5.1s)
+✔ [4039/4068] Built LogdetLean.WishartIdentityTransformODE (4.0s)
+✔ [4040/4068] Built LogdetLean.GeneralRLeadingRateSimplification (4.5s)
+✔ [4041/4068] Built LogdetLean.GeneralRResidualCovariance (5.3s)
+✔ [4042/4068] Built LogdetLean.GeneralRFinalRateLimit (3.5s)
+✔ [4043/4068] Built LogdetLean.WishartActualLogCurve (3.9s)
+✔ [4044/4068] Built LogdetLean.GeneralRStatistic (2.5s)
+✔ [4045/4068] Built LogdetLean.NullFirstEdgeworthFourier (8.6s)
+✔ [4046/4068] Built LogdetLean.WishartActualGlobalLog (2.8s)
+✔ [4047/4068] Built LogdetLean.GeneralRCenteredSampleBridge (2.7s)
+✔ [4048/4068] Built LogdetLean.WishartLeadingKolmogorov (3.0s)
+✔ [4049/4068] Built LogdetLean.NullEdgeworthGaussianWindow (4.5s)
+✔ [4050/4068] Built LogdetLean.GeneralRPaperBounds (3.8s)
+✔ [4051/4068] Built LogdetLean.NullSignedEdgeworthAssembly (3.4s)
+✔ [4052/4068] Built LogdetLean.NullUniformEdgeworthFourier (4.4s)
+✔ [4053/4068] Built LogdetLean.GeneralRPaperExactTranslation (3.0s)
+✔ [4054/4068] Built LogdetLean.NullUniformSignedAssembly (2.3s)
+✔ [4055/4068] Built LogdetLean.NullUniformEdgeworthTarget (2.0s)
+⚠ [4056/4068] Built LogdetLean.NullRegimeAsymptotics (4.1s)
+warning: LogdetLean/NullRegimeAsymptotics.lean:125:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:140:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:142:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:311:29: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:329:28: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:332:28: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:356:41: This simp argument is unused:
+  Nat.cast_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Nat.cast_add, Nat.cast_one, add_zero]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:360:10: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:431:28: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:435:28: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:558:27: This simp argument is unused:
+  pow_one
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [nsmul_eq_mul]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:575:10: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:925:72: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullRegimeAsymptotics.lean:926:72: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+✔ [4057/4068] Built LogdetLean.HardEdgeConstant (4.9s)
+✔ [4058/4068] Built LogdetLean.NullDiluteBounds (5.8s)
+✔ [4059/4068] Built LogdetLean.HardEdgeTailAsymptotics (5.9s)
+✔ [4060/4068] Built LogdetLean.NullGrowingGapLimits (9.1s)
+⚠ [4061/4068] Built LogdetLean.NullRefinedAsymptotics (4.7s)
+warning: LogdetLean/NullRefinedAsymptotics.lean:349:25: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+info: LogdetLean/NullRefinedAsymptotics.lean:361:14: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+warning: LogdetLean/NullRefinedAsymptotics.lean:361:10: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+info: LogdetLean/NullRefinedAsymptotics.lean:368:4: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+info: LogdetLean/NullRefinedAsymptotics.lean:431:6: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+info: LogdetLean/NullRefinedAsymptotics.lean:574:26: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+warning: LogdetLean/NullRefinedAsymptotics.lean:574:22: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+info: LogdetLean/NullRefinedAsymptotics.lean:598:25: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+info: LogdetLean/NullRefinedAsymptotics.lean:598:25: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+✔ [4062/4068] Built LogdetLean.NullSharpSupremum (2.4s)
+⚠ [4063/4068] Built LogdetLean.NullSharpSupremumDecimal (3.4s)
+warning: LogdetLean/NullSharpSupremumDecimal.lean:59:4: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: LogdetLean/NullSharpSupremumDecimal.lean:79:4: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+✔ [4064/4068] Built LogdetLean.NullAUniformAsymptotics (4.8s)
+✔ [4065/4068] Built LogdetLean.NullVUniformAsymptotics (4.5s)
+ℹ [4066/4068] Built LogdetLean.PaperTable2Endpoints (1.8s)
+info: LogdetLean/PaperTable2Endpoints.lean:61:0: LogdetLean.map_centeredSampleCorrelationDet_succ_eq_map_product_betaFactors (m p : ℕ) (hp : p ≤ m) :
+  MeasureTheory.Measure.map (LogdetLean.centeredSampleCorrelationDet (m + 1) p)
+      (LogdetLean.nestedProductMeasure (ProbabilityTheory.stdGaussian (LogdetLean.ObservationSpace (m + 1))) p) =
+    MeasureTheory.Measure.map (LogdetLean.nestedRealProduct p)
+      (LogdetLean.nestedProductMeasureFamily (LogdetLean.gaussianGramSchmidtFactorMeasure m) p)
+info: LogdetLean/PaperTable2Endpoints.lean:62:0: LogdetLean.uniformNullEdgeworthTarget_proved : LogdetLean.UniformNullEdgeworthTarget
+info: LogdetLean/PaperTable2Endpoints.lean:63:0: LogdetLean.tendsto_uniformActualNullSharpKolmogorov_relative_error_zero (m : ℕ → ℕ)
+  (hadm : ∀ᶠ (p : ℕ) in Filter.atTop, LogdetLean.Admissible (m p) p) :
+  Filter.Tendsto
+    (fun p =>
+      |LogdetLean.kolmogorovDistance (LogdetLean.actualZ0mpMeasureOrGaussian (m p) p)
+              (ProbabilityTheory.gaussianReal 0 1) -
+            LogdetLean.nullLambdaSeries (m p) p / (6 * √(2 * Real.pi))| /
+        LogdetLean.nullLambdaSeries (m p) p)
+    Filter.atTop (nhds 0)
+info: LogdetLean/PaperTable2Endpoints.lean:64:0: LogdetLean.paperTheoremFiveOne_exact :
+  ∃ C,
+    0 < C ∧
+      ∀ {m p : ℕ},
+        LogdetLean.Admissible m p →
+          ∀ (R : LogdetLean.CorrelationMatrix p),
+            LogdetLean.kolmogorovDistance
+                  (MeasureTheory.Measure.map
+                    (fun z => LogdetLean.GeneralRDecomposition.M_R m R z / LogdetLean.generalRProxyScale m R)
+                    (LogdetLean.standardGaussianDataMeasure m p))
+                  (ProbabilityTheory.gaussianReal 0 1) ≤
+                C * LogdetLean.generalRPaperLeadingRate m R ∧
+              LogdetLean.generalRSpectralCubicRate m R ≤ LogdetLean.generalRPaperRhoSimpleBound m
+info: LogdetLean/PaperTable2Endpoints.lean:65:0: LogdetLean.paperTheoremFiveTwo_exact :
+  ∃ C,
+    0 < C ∧
+      ∀ {m p : ℕ},
+        LogdetLean.Admissible m p →
+          ∀ (mu : LogdetLean.CorrelationMatrix.Observation p) (R : LogdetLean.CorrelationMatrix p),
+            LogdetLean.kolmogorovDistance
+                  (MeasureTheory.Measure.map (LogdetLean.paperGeneralRStatistic m R)
+                    (LogdetLean.paperIidGaussianCorrelationSampleMeasure m mu R))
+                  (ProbabilityTheory.gaussianReal 0 1) ≤
+                C * LogdetLean.generalRPaperFullRate m R ∧
+              LogdetLean.kolmogorovDistance
+                  (MeasureTheory.Measure.map (LogdetLean.paperGeneralRStatistic m R)
+                    (LogdetLean.paperIidGaussianCorrelationSampleMeasure m mu R))
+                  (ProbabilityTheory.gaussianReal 0 1) ≤
+                C * (LogdetLean.nullLambdaSeries m p + LogdetLean.generalRDimensionCubeRootRate p)
+info: LogdetLean/PaperTable2Endpoints.lean:66:0: LogdetLean.paperTheoremFiveTwo_arbitraryCovariance_exact :
+  ∃ C,
+    0 < C ∧
+      ∀ {m p : ℕ},
+        LogdetLean.Admissible m p →
+          ∀ (mu : LogdetLean.CorrelationMatrix.Observation p) (Sigma : LogdetLean.CovarianceMatrix p),
+            LogdetLean.kolmogorovDistance
+                  (MeasureTheory.Measure.map (LogdetLean.paperGeneralRStatistic m Sigma.correlation)
+                    (LogdetLean.iidGaussianDataMeasureWithMean (m + 1) mu Sigma))
+                  (ProbabilityTheory.gaussianReal 0 1) ≤
+                C * LogdetLean.generalRPaperFullRate m Sigma.correlation ∧
+              LogdetLean.kolmogorovDistance
+                  (MeasureTheory.Measure.map (LogdetLean.paperGeneralRStatistic m Sigma.correlation)
+                    (LogdetLean.iidGaussianDataMeasureWithMean (m + 1) mu Sigma))
+                  (ProbabilityTheory.gaussianReal 0 1) ≤
+                C * (LogdetLean.nullLambdaSeries m p + LogdetLean.generalRDimensionCubeRootRate p)
+info: LogdetLean/PaperTable2Endpoints.lean:67:0: LogdetLean.tendsto_nullASeries_div_uniformScale {mseq pseq : ℕ → ℕ} (hp : Filter.Tendsto pseq Filter.atTop Filter.atTop)
+  (hadm : ∀ᶠ (n : ℕ) in Filter.atTop, LogdetLean.Admissible (mseq n) (pseq n)) :
+  Filter.Tendsto (fun n => LogdetLean.nullASeries (mseq n) (pseq n) / LogdetLean.nullAUniformScale (mseq n) (pseq n))
+    Filter.atTop (nhds 1)
+info: LogdetLean/PaperTable2Endpoints.lean:68:0: LogdetLean.paperEquationSixThree_exact :
+  (∀ (d : ℕ),
+      1 ≤ d → 4 / ↑(d + 1) ≤ LogdetLean.hardEdgeAConstant d ∧ LogdetLean.hardEdgeAConstant d ≤ 4 / ↑d + 8 / ↑d ^ 2) ∧
+    Filter.Tendsto (fun d => ↑d * LogdetLean.hardEdgeAConstant d) Filter.atTop (nhds 4) ∧
+      ∀ (mseq pseq : ℕ → ℕ),
+        Filter.Tendsto pseq Filter.atTop Filter.atTop →
+          (∀ᶠ (n : ℕ) in Filter.atTop, LogdetLean.Admissible (mseq n) (pseq n)) →
+            Filter.Tendsto (fun n => mseq n - pseq n) Filter.atTop Filter.atTop →
+              Filter.Tendsto
+                (fun n => LogdetLean.nullASeries (mseq n) (pseq n) / LogdetLean.nullAGrowingScale (mseq n) (pseq n))
+                Filter.atTop (nhds 1)
+info: LogdetLean/PaperTable2Endpoints.lean:69:0: LogdetLean.tendsto_nullVSeries_div_uniformScale {mseq pseq : ℕ → ℕ} (hp : Filter.Tendsto pseq Filter.atTop Filter.atTop)
+  (hadm : ∀ᶠ (n : ℕ) in Filter.atTop, LogdetLean.Admissible (mseq n) (pseq n))
+  (hgapPos : ∀ᶠ (n : ℕ) in Filter.atTop, 1 ≤ mseq n - pseq n) :
+  Filter.Tendsto (fun n => LogdetLean.nullVSeries (mseq n) (pseq n) / LogdetLean.nullVUniformScale (mseq n) (pseq n))
+    Filter.atTop (nhds 1)
+info: LogdetLean/PaperTable2Endpoints.lean:70:0: LogdetLean.tendsto_square_nullVSeries_sub_two_log :
+  Filter.Tendsto (fun p => LogdetLean.nullVSeries p p - 2 * Real.log ↑p) Filter.atTop
+    (nhds (2 * Real.eulerMascheroniConstant + Real.pi ^ 2 / 4))
+info: LogdetLean/PaperTable2Endpoints.lean:71:0: LogdetLean.paperEquationSixSix_exact :
+  LogdetLean.hardEdgeAConstant 0 = 4 * Real.pi ^ 2 / 3 + 7 * LogdetLean.realZetaThree ∧
+    (∀ (d : ℕ),
+        LogdetLean.hardEdgeAConstant d =
+          LogdetLean.hardEdgeAConstant 0 + ∑ k ∈ Finset.Icc 1 d, -LogdetLean.negPsiTwoSeries (↑k / 2)) ∧
+      StrictAnti LogdetLean.hardEdgeAConstant
+info: LogdetLean/PaperTable2Endpoints.lean:72:0: LogdetLean.tendsto_scaledNullKolmogorovSup_closed :
+  Filter.Tendsto LogdetLean.scaledNullKolmogorovSup Filter.atTop (nhds (LogdetLean.squareAConstant / (24 * √Real.pi)))
+info: LogdetLean/PaperTable2Endpoints.lean:73:0: LogdetLean.nullSharpSupremumConstant_decimal8 :
+  50715638 / 100000000 < LogdetLean.nullSharpSupremumConstant ∧
+    LogdetLean.nullSharpSupremumConstant < 50715639 / 100000000
+✔ [4067/4068] Built LogdetLean (1.7s)
+Build completed successfully (4068 jobs).

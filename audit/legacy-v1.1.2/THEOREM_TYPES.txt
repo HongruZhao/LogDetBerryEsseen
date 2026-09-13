@@ -1,0 +1,94 @@
+LogdetLean.map_centeredSampleCorrelationDet_succ_eq_map_product_betaFactors (m p : ℕ) (hp : p ≤ m) :
+  MeasureTheory.Measure.map (LogdetLean.centeredSampleCorrelationDet (m + 1) p)
+      (LogdetLean.nestedProductMeasure (ProbabilityTheory.stdGaussian (LogdetLean.ObservationSpace (m + 1))) p) =
+    MeasureTheory.Measure.map (LogdetLean.nestedRealProduct p)
+      (LogdetLean.nestedProductMeasureFamily (LogdetLean.gaussianGramSchmidtFactorMeasure m) p)
+LogdetLean.uniformNullEdgeworthTarget_proved : LogdetLean.UniformNullEdgeworthTarget
+LogdetLean.tendsto_uniformActualNullSharpKolmogorov_relative_error_zero (m : ℕ → ℕ)
+  (hadm : ∀ᶠ (p : ℕ) in Filter.atTop, LogdetLean.Admissible (m p) p) :
+  Filter.Tendsto
+    (fun p =>
+      |LogdetLean.kolmogorovDistance (LogdetLean.actualZ0mpMeasureOrGaussian (m p) p)
+              (ProbabilityTheory.gaussianReal 0 1) -
+            LogdetLean.nullLambdaSeries (m p) p / (6 * √(2 * Real.pi))| /
+        LogdetLean.nullLambdaSeries (m p) p)
+    Filter.atTop (nhds 0)
+LogdetLean.paperTheoremFiveOne_exact :
+  ∃ C,
+    0 < C ∧
+      ∀ {m p : ℕ},
+        LogdetLean.Admissible m p →
+          ∀ (R : LogdetLean.CorrelationMatrix p),
+            LogdetLean.kolmogorovDistance
+                  (MeasureTheory.Measure.map
+                    (fun z => LogdetLean.GeneralRDecomposition.M_R m R z / LogdetLean.generalRProxyScale m R)
+                    (LogdetLean.standardGaussianDataMeasure m p))
+                  (ProbabilityTheory.gaussianReal 0 1) ≤
+                C * LogdetLean.generalRPaperLeadingRate m R ∧
+              LogdetLean.generalRSpectralCubicRate m R ≤ LogdetLean.generalRPaperRhoSimpleBound m
+LogdetLean.paperTheoremFiveTwo_exact :
+  ∃ C,
+    0 < C ∧
+      ∀ {m p : ℕ},
+        LogdetLean.Admissible m p →
+          ∀ (mu : LogdetLean.CorrelationMatrix.Observation p) (R : LogdetLean.CorrelationMatrix p),
+            LogdetLean.kolmogorovDistance
+                  (MeasureTheory.Measure.map (LogdetLean.paperGeneralRStatistic m R)
+                    (LogdetLean.paperIidGaussianCorrelationSampleMeasure m mu R))
+                  (ProbabilityTheory.gaussianReal 0 1) ≤
+                C * LogdetLean.generalRPaperFullRate m R ∧
+              LogdetLean.kolmogorovDistance
+                  (MeasureTheory.Measure.map (LogdetLean.paperGeneralRStatistic m R)
+                    (LogdetLean.paperIidGaussianCorrelationSampleMeasure m mu R))
+                  (ProbabilityTheory.gaussianReal 0 1) ≤
+                C * (LogdetLean.nullLambdaSeries m p + LogdetLean.generalRDimensionCubeRootRate p)
+LogdetLean.paperTheoremFiveTwo_arbitraryCovariance_exact :
+  ∃ C,
+    0 < C ∧
+      ∀ {m p : ℕ},
+        LogdetLean.Admissible m p →
+          ∀ (mu : LogdetLean.CorrelationMatrix.Observation p) (Sigma : LogdetLean.CovarianceMatrix p),
+            LogdetLean.kolmogorovDistance
+                  (MeasureTheory.Measure.map (LogdetLean.paperGeneralRStatistic m Sigma.correlation)
+                    (LogdetLean.iidGaussianDataMeasureWithMean (m + 1) mu Sigma))
+                  (ProbabilityTheory.gaussianReal 0 1) ≤
+                C * LogdetLean.generalRPaperFullRate m Sigma.correlation ∧
+              LogdetLean.kolmogorovDistance
+                  (MeasureTheory.Measure.map (LogdetLean.paperGeneralRStatistic m Sigma.correlation)
+                    (LogdetLean.iidGaussianDataMeasureWithMean (m + 1) mu Sigma))
+                  (ProbabilityTheory.gaussianReal 0 1) ≤
+                C * (LogdetLean.nullLambdaSeries m p + LogdetLean.generalRDimensionCubeRootRate p)
+LogdetLean.tendsto_nullASeries_div_uniformScale {mseq pseq : ℕ → ℕ} (hp : Filter.Tendsto pseq Filter.atTop Filter.atTop)
+  (hadm : ∀ᶠ (n : ℕ) in Filter.atTop, LogdetLean.Admissible (mseq n) (pseq n)) :
+  Filter.Tendsto (fun n => LogdetLean.nullASeries (mseq n) (pseq n) / LogdetLean.nullAUniformScale (mseq n) (pseq n))
+    Filter.atTop (nhds 1)
+LogdetLean.paperEquationSixThree_exact :
+  (∀ (d : ℕ),
+      1 ≤ d → 4 / ↑(d + 1) ≤ LogdetLean.hardEdgeAConstant d ∧ LogdetLean.hardEdgeAConstant d ≤ 4 / ↑d + 8 / ↑d ^ 2) ∧
+    Filter.Tendsto (fun d => ↑d * LogdetLean.hardEdgeAConstant d) Filter.atTop (nhds 4) ∧
+      ∀ (mseq pseq : ℕ → ℕ),
+        Filter.Tendsto pseq Filter.atTop Filter.atTop →
+          (∀ᶠ (n : ℕ) in Filter.atTop, LogdetLean.Admissible (mseq n) (pseq n)) →
+            Filter.Tendsto (fun n => mseq n - pseq n) Filter.atTop Filter.atTop →
+              Filter.Tendsto
+                (fun n => LogdetLean.nullASeries (mseq n) (pseq n) / LogdetLean.nullAGrowingScale (mseq n) (pseq n))
+                Filter.atTop (nhds 1)
+LogdetLean.tendsto_nullVSeries_div_uniformScale {mseq pseq : ℕ → ℕ} (hp : Filter.Tendsto pseq Filter.atTop Filter.atTop)
+  (hadm : ∀ᶠ (n : ℕ) in Filter.atTop, LogdetLean.Admissible (mseq n) (pseq n))
+  (hgapPos : ∀ᶠ (n : ℕ) in Filter.atTop, 1 ≤ mseq n - pseq n) :
+  Filter.Tendsto (fun n => LogdetLean.nullVSeries (mseq n) (pseq n) / LogdetLean.nullVUniformScale (mseq n) (pseq n))
+    Filter.atTop (nhds 1)
+LogdetLean.tendsto_square_nullVSeries_sub_two_log :
+  Filter.Tendsto (fun p => LogdetLean.nullVSeries p p - 2 * Real.log ↑p) Filter.atTop
+    (nhds (2 * Real.eulerMascheroniConstant + Real.pi ^ 2 / 4))
+LogdetLean.paperEquationSixSix_exact :
+  LogdetLean.hardEdgeAConstant 0 = 4 * Real.pi ^ 2 / 3 + 7 * LogdetLean.realZetaThree ∧
+    (∀ (d : ℕ),
+        LogdetLean.hardEdgeAConstant d =
+          LogdetLean.hardEdgeAConstant 0 + ∑ k ∈ Finset.Icc 1 d, -LogdetLean.negPsiTwoSeries (↑k / 2)) ∧
+      StrictAnti LogdetLean.hardEdgeAConstant
+LogdetLean.tendsto_scaledNullKolmogorovSup_closed :
+  Filter.Tendsto LogdetLean.scaledNullKolmogorovSup Filter.atTop (nhds (LogdetLean.squareAConstant / (24 * √Real.pi)))
+LogdetLean.nullSharpSupremumConstant_decimal8 :
+  50715638 / 100000000 < LogdetLean.nullSharpSupremumConstant ∧
+    LogdetLean.nullSharpSupremumConstant < 50715639 / 100000000
