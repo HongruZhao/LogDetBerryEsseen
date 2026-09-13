@@ -74,3 +74,7 @@ All three public theorems use only `propext`, `Classical.choice`, and `Quot.soun
 ## Citation and license
 
 See [CITATION.cff](CITATION.cff) and [provenance](docs/PROVENANCE.md). Earlier source material is preserved in [archives](archives/README.md). Project contributions are licensed under [GPL-3.0-only](LICENSE).
+
+## Acknowledgments
+
+We thank OpenAI for sharing [PrimeGaps186](https://github.com/openai/PrimeGaps186). This repository follows its organization and separation of theorem statements, proofs, and verification.
