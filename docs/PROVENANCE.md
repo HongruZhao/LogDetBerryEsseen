@@ -11,12 +11,21 @@ The original capsule is identified in the paper by
 [DOI 10.5281/zenodo.21898548](https://doi.org/10.5281/zenodo.21898548).
 That DOI does not identify this revised GitHub source tree.
 
+The full v1.1.4 formalization is published as
+[DOI 10.5281/zenodo.22739087](https://doi.org/10.5281/zenodo.22739087).
+The matching GitHub release mirrors that ZIP exactly. The GitHub source tree
+keeps the concise three-result interface, whose statement, proof-entry, and
+verification files are byte-identical to those in the full archive.
+
 Revision 1.1.4 narrows the public interface to three theorem statements and
 retains their transitive supporting modules. Five unconditional definitions
 and lemmas were extracted without changing their bodies into
 `LogdetLean/GeneralRVarianceBasics.lean`; one importing module was updated.
-The remaining original proof modules are unchanged. The [verification
-record](VERIFICATION.md) includes a source-identity receipt.
+The September 14 synchronization also imports the archive's additions to
+`GeneralRCenterIdentity.lean` and `HardEdgeConstant.lean`. The other shared proof
+files are unchanged except for the existing focused import in
+`KibbleCovarianceBounds.lean`. The [version correspondence](ZENODO_RELEASE.md)
+and [verification record](VERIFICATION.md) document these differences.
 
 The historical ZIPs and retired source modules remain in [archives](../archives/README.md),
 and earlier audit reports remain under `audit/`. The broader v1.1.3 source

@@ -4,6 +4,10 @@ This version covers three headline results. The target propositions are in
 [Challenge.lean](../Challenge.lean), and their proofs are in
 [LogDetBerryEsseen.lean](../LogDetBerryEsseen.lean).
 
+These interface files match the [full v1.1.4 Zenodo archive](https://doi.org/10.5281/zenodo.22739087).
+That archive contains the complete 243-entry manuscript crosswalk and 288 audited
+endpoints. See [version correspondence](ZENODO_RELEASE.md).
+
 | Paper result | Public theorem | Supporting proof |
 |---|---|---|
 | Theorem 4.2: uniform signed first Edgeworth expansion and sharp Kolmogorov equivalent | `LogDetBerryEsseen.sharp_null` | `uniformNullEdgeworthTarget_proved` and `tendsto_uniformActualNullSharpKolmogorov_relative_error_zero` in [NullUniformEdgeworthTarget.lean](../LogdetLean/NullUniformEdgeworthTarget.lean) |

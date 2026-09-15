@@ -144,3 +144,17 @@ theorem logDetCenter_eq_logDet_add_nullCenterDigammaSeries
 end
 end GeneralRDecomposition
 end LogdetLean
+
+namespace LogdetLean.GeneralRDecomposition
+noncomputable section
+open MeasureTheory ProbabilityTheory
+
+/-- Public actual-law bridge for the identity population. -/
+theorem map_log_sampleCorrelation_identity_eq_logBetaSumLaw {m p : ℕ} (hp : p ≤ m) :
+    (standardGaussianDataMeasure m p).map
+      (fun z ↦ Real.log (sampleCorrelation (CorrelationMatrix.identity p) z).det) = logBetaSumLaw m p := by
+  simp only [sampleCorrelation, correlateRows_identity_center]
+  exact map_log_det_sampleCorrelationMatrix_standard_eq_logBetaSumLaw_center hp
+
+end
+end LogdetLean.GeneralRDecomposition

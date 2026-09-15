@@ -29,42 +29,45 @@ mathematical hypotheses from a theorem.
 The formal definitions of logarithms and division are total. The relevant
 positivity, nonsingularity, and normalization facts are proved in the library.
 
-## Gap found in the broader original project
+## Full formalization and the historical variance gap
 
-The optional exact coefficient-series identity for the actual
+In the original v1.1.2 development, the optional coefficient-series identity for the actual
 **general-correlation variance**, equation (5.14), was conditional on
 `KibbleScalarLimitCertificate`: the expanding-window covariance integral must
-converge to the proposed coefficient series. The original code proves its
-limit is the actual covariance, but does not identify that limit with the
+converge to the proposed coefficient series. That code proved its
+limit was the actual covariance, but did not identify that limit with the
 series without the extra hypothesis.
 
-That conditional identity is outside the three main results. This focused
-version excludes the certificate and the conditional identity modules from
-its active source and import closure. Their unchanged sources are retained
-in [the historical archive](../archives/v1.1.3-retired). The original statements can be inspected in
-[the preserved earlier revision](https://github.com/HongruZhao/LogDetBerryEsseen/blob/ec41febe106f5b4c543bf908ff6e25764fe210bd/LogdetLean/KibbleCovarianceBridge.lean).
-Removing them does not prove the missing scalar limit.
+The [published full v1.1.4 archive](https://doi.org/10.5281/zenodo.22739087)
+now proves that scalar identification and the actual exact variance identity
+without an extra analytic certificate. All 38 previously outstanding inventory
+entries are completed there. The archive contains 243 verified inventory entries
+and 288 audited endpoints, including the full statement crosswalk and the
+supplement sources with corrections marked in blue.
+
+This focused repository continues to expose three main results. The older
+conditional modules remain in [the historical archive](../archives/v1.1.3-retired)
+as provenance, outside the active build. Historical audit reports describe their
+dated source snapshots; they are not the current status of the full archive.
 
 The variance **bounds** have a separate direct actual-covariance route in
 [KibbleCovarianceBounds.lean](../LogdetLean/KibbleCovarianceBounds.lean).
-They do not need the coefficient-series identity. Thus the unresolved exact
-identity must not be confused with a missing bound in the proof of Theorem 5.2.
+They do not need the coefficient-series identity. The historical gap did not
+affect the bound in Theorem 5.2.
 The elementary covariance algebra needed for this route is retained in
 [GeneralRVarianceBasics.lean](../LogdetLean/GeneralRVarianceBasics.lean).
 
 ## Limits of the review
 
-The supplied paper and source archives were compared on 2026-09-13. This is a
-principal-statement and model-bridge review, supported by Lean builds and
-kernel checks. It is not an independent line-by-line proof review or a
-certification of every manuscript equation, application, citation, or novelty
-claim. Comparator and Nanoda have not been run; `Challenge.lean` reuses the
-supporting library's definitions.
+The GitHub interface covers the three listed main statements and their model
+bridges. The expanded equation-by-equation inventory belongs to the separate
+full Zenodo ZIP, not to this reduced interface. Its revised supplement clarifies
+the nondegenerate domain of the joint density and corrects the Gaussian tail
+bound at the prescribed cutoff; all changes are marked in blue. The main paper
+and numbered display bodies are unchanged.
 
-The original abstract's claim about “All theoretical results” is too broad
-for this focused repository. An accurate replacement is:
-
-> Theorem 4.2, Theorem 5.2, and Corollary 6.2 have Lean 4 formulations with
-> kernel-checked proofs under their stated hypotheses.
-
-The supplied manuscript archives have not been edited.
+The verification claim concerns the encoded mathematical statements under their
+stated model and domain hypotheses. It does not certify prose, bibliographic
+attribution, novelty claims, or open problems. Comparator and Nanoda have not
+been run; `Challenge.lean` reuses the supporting library's definitions. See the
+[version correspondence](ZENODO_RELEASE.md) for the exact source relationship.

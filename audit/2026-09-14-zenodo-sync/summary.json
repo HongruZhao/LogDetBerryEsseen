@@ -1,0 +1,49 @@
+{
+  "status": "PASSED",
+  "date": "2026-09-14",
+  "checked_at": "2026-09-15T02:00:09.714800+00:00",
+  "version": "v1.1.4",
+  "zenodo_doi": "10.5281/zenodo.22739087",
+  "public_theorems": 3,
+  "active_project_modules_built_from_source": 131,
+  "project_build_cache_reused": false,
+  "pinned_dependency_caches_reused": true,
+  "lake_jobs": 4062,
+  "compiler_errors": 0,
+  "linter_warnings": 17,
+  "project_axioms": [],
+  "allowed_foundations": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ],
+  "imported_closure_sorry_free": true,
+  "leanchecker_modules": [
+    {
+      "module": "LogdetLean.NullUniformEdgeworthTarget",
+      "exit_code": 0
+    },
+    {
+      "module": "LogdetLean.GeneralRPaperExactTranslation",
+      "exit_code": 0
+    },
+    {
+      "module": "LogdetLean.NullSharpSupremum",
+      "exit_code": 0
+    },
+    {
+      "module": "LogDetBerryEsseen",
+      "exit_code": 0
+    }
+  ],
+  "verification_execution": "Source, dependency and binary checks, lake build, Verification.lean, check_axioms.py and all four leanchecker calls succeeded. The cache download step was omitted because pinned dependency caches were already present.",
+  "all_nine_dependency_revisions_matched": true,
+  "lean_or_mathlib_rebuilt_from_source": false,
+  "comparator_run": false,
+  "nanoda_run": false,
+  "lean": "4.33.0-rc2",
+  "lean_commit": "d8b18978322de05a8f3dba51ef03cf5461676c17",
+  "mathlib_commit": "641fbd329d4ffb62bef83c51f54088469056bd36",
+  "public_interface_identical_to_zenodo": true,
+  "archive_sha256": "d5172de1e5b338b140485f816950ca638d9b776b5927147a05ce235b5a26769c"
+}

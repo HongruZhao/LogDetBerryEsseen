@@ -1,0 +1,14 @@
+{
+  "status": "PUBLISHED",
+  "confirmed_at": "2026-09-15T01:56:50.042912+00:00",
+  "record_id": 22739087,
+  "version": "v1.1.4",
+  "record_url": "https://zenodo.org/records/22739087",
+  "doi": "10.5281/zenodo.22739087",
+  "record_publication_date_metadata": "2026-09-13",
+  "archive": "LogDetBerryEsseen_Full_Lean_v1.1.4.zip",
+  "archive_bytes": 1954690,
+  "archive_sha256": "d5172de1e5b338b140485f816950ca638d9b776b5927147a05ce235b5a26769c",
+  "archive_md5": "20efd3037140c10c2c31f92330527687",
+  "ui_verification": "Publish confirmation completed; URL became the public record without preview; published version and assigned DOI shown."
+}

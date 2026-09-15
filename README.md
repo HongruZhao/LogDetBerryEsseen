@@ -4,6 +4,8 @@ Lean 4 proofs of the main results in *Sharp Berry–Esseen Bounds for the Log De
 
 The public development has **three theorems**. Read their [statements](Challenge.lean) and [proof entry points](LogDetBerryEsseen.lean).
 
+**Version v1.1.4:** the [full formalization on Zenodo](https://doi.org/10.5281/zenodo.22739087) covers all 243 manuscript inventory entries through 288 audited endpoints. This repository presents the three main results below. The [matching GitHub release](https://github.com/HongruZhao/LogDetBerryEsseen/releases/tag/v1.1.4) includes the exact same Lean ZIP; see the [version correspondence](docs/ZENODO_RELEASE.md).
+
 ## Main results
 
 Let $\widehat R$ be the Pearson correlation matrix of $n$ independent Gaussian observations in dimension $p$, with $m=n-1\ge p\ge2$. Write $b_{m,p}$, $V_{m,p}$, and $-A_{m,p}$ for the exact null mean, variance, and third cumulant, and set $\lambda_{m,p}=A_{m,p}/V_{m,p}^{3/2}$.

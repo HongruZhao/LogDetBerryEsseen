@@ -1,8 +1,11 @@
 cff-version: 1.2.0
-message: "Cite the exact version or commit used. The original v1.1.2 archive DOI does not identify this source revision."
+message: "Cite the full v1.1.4 formalization archive with this DOI. Include the Git commit when using the focused three-result repository."
 title: "Lean verification for Sharp Berry--Esseen Bounds for the Log Determinant of a Gaussian Sample Correlation Matrix"
 type: software
 version: "1.1.4"
+doi: "10.5281/zenodo.22739087"
+url: "https://zenodo.org/records/22739087"
+date-released: 2026-09-13
 authors:
   - family-names: Zhao
     given-names: Hongru

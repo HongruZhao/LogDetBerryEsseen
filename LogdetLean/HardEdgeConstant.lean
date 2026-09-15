@@ -333,3 +333,44 @@ theorem hardEdgeAConstant_zero_eq_squareAConstant :
 end
 
 end LogdetLean
+
+namespace LogdetLean
+noncomputable section
+
+/-- Public access to the integer half of the hard-edge constant calculation. -/
+theorem paper_integer_negPsiTwo_mass :
+    (∑' a : ℕ, negPsiTwoSeries ((a + 1 : ℕ) : ℝ)) = Real.pi ^ 2 / 3 :=
+  tsum_negPsiTwo_nat_succ
+
+/-- Public access to the half-integer half of the same calculation. -/
+theorem paper_half_negPsiTwo_mass :
+    (∑' a : ℕ, negPsiTwoSeries ((a : ℝ) + 1 / 2)) = Real.pi ^ 2 + 7 * realZetaThree :=
+  tsum_negPsiTwo_nat_half
+
+theorem paper_odd_inverse_power_masses :
+    (∑' n : ℕ, 1 / (((2 * n + 1 : ℕ) : ℝ) ^ 2)) = Real.pi ^ 2 / 8 ∧
+    (∑' n : ℕ, 1 / (((2 * n + 1 : ℕ) : ℝ) ^ 3)) = 7 / 8 * realZetaThree :=
+  ⟨odd_inv_sq_tsum, odd_inv_cube_tsum⟩
+
+/-- The weighted odd antidiagonal and both separate inverse-power sums
+appearing in (S62), before their zeta evaluations. -/
+theorem paper_half_negPsiTwo_weighted_chain :
+    (∑' a : ℕ, negPsiTwoSeries ((a : ℝ) + 1 / 2)) =
+      16 * (∑' n : ℕ, ((n : ℝ) + 1) / (((2 * n + 1 : ℕ) : ℝ) ^ 3)) ∧
+    16 * (∑' n : ℕ, ((n : ℝ) + 1) / (((2 * n + 1 : ℕ) : ℝ) ^ 3)) =
+      8 * (∑' n : ℕ, 1 / (((2 * n + 1 : ℕ) : ℝ) ^ 2)) +
+      8 * (∑' n : ℕ, 1 / (((2 * n + 1 : ℕ) : ℝ) ^ 3)) := by
+  have he : 16 * (∑' n : ℕ, ((n : ℝ) + 1) / (((2 * n + 1 : ℕ) : ℝ) ^ 3)) =
+      8 * (∑' n : ℕ, 1 / (((2 * n + 1 : ℕ) : ℝ) ^ 2)) +
+      8 * (∑' n : ℕ, 1 / (((2 * n + 1 : ℕ) : ℝ) ^ 3)) := by
+    rw [← tsum_mul_left, ← tsum_mul_left, ← tsum_mul_left,
+      ← (summable_odd_inv_sq.mul_left 8).tsum_add (summable_odd_inv_cube.mul_left 8)]
+    apply tsum_congr
+    intro n
+    convert half_antidiagonal_factor n using 1 <;> ring
+  refine ⟨?_, he⟩
+  rw [tsum_negPsiTwo_nat_half, he, odd_inv_sq_tsum, odd_inv_cube_tsum]
+  ring
+
+end
+end LogdetLean

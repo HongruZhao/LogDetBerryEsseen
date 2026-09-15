@@ -1,0 +1,7 @@
+LogDetBerryEsseen.sharp_null : LogDetBerryEsseen.Challenge.sharpNull
+LogDetBerryEsseen.general_correlation : LogDetBerryEsseen.Challenge.generalCorrelation
+LogDetBerryEsseen.worst_case : LogDetBerryEsseen.Challenge.worstCase
+'LogDetBerryEsseen.sharp_null' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogDetBerryEsseen.general_correlation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'LogDetBerryEsseen.worst_case' depends on axioms: [propext, Classical.choice, Quot.sound]
+Declarations are sorry-free!
